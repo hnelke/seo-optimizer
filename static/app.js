@@ -119,7 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let runsSortOrder = 'desc'; // 'asc' or 'desc'
 
     // === THEME MANAGER ===
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    let savedTheme = localStorage.getItem('theme');
+    if (!savedTheme) {
+        savedTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
     if (savedTheme === 'light') {
         htmlElement.classList.add('light-mode');
     }

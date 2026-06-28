@@ -374,7 +374,10 @@
             // Theme manager
             const htmlElement = document.documentElement;
             const themeToggleBtn = document.getElementById('themeToggleBtn');
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            let savedTheme = localStorage.getItem('theme');
+            if (!savedTheme) {
+                savedTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
             if (savedTheme === 'light') {
                 htmlElement.classList.add('light-mode');
             }
