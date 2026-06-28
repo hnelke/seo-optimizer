@@ -30,6 +30,7 @@ jobs:
         host: ${{ env.CLEAN_HOST }}
         username: ${{ secrets.SSH_USER || secrets.SSH_USERNAME || secrets.USER || secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY || secrets.KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE || secrets.PASSPHRASE }}
         port: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
         script: |
           # Go to the server path
