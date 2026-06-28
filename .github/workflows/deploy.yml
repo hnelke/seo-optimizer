@@ -31,20 +31,19 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSPHRASE || secrets.PASSPHRASE }}
         port: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
         script: |
-          # Go to server path
+          set -e
           mkdir -p /var/www/seo-optimizer
           cd /var/www/seo-optimizer
           
-          # Pull latest code from GitHub
+          # Pull latest code from GitHub (handles non-empty directory without .git)
           if [ ! -d ".git" ]; then
-            git clone https://github.com/hnelke/seo-optimizer.git .
-          else
-            git fetch origin main
-            git reset --hard origin/main
+            echo "Initializing git repository in non-empty directory..."
+            git init
+            git remote add origin https://github.com/hnelke/seo-optimizer.git
           fi
           
-          # Delete temporary debug file from previous runs if any
-          rm -f static/debug_services.txt
+          git fetch origin main
+          git reset --hard origin/main
           
           # Setup python environment using existing 'venv' folder
           if [ ! -d "venv" ]; then
@@ -54,10 +53,10 @@ jobs:
           pip install -r requirements.txt
           
           # Kill running process on port 8001
-          PID=$(lsof -t -i:8001 || fuser -n tcp 8001 2>/dev/null || pgrep -f "port 8001")
-          if [ -n "$PID" ]; then
+          PID=$(lsof -t -i:8001 || fuser -n tcp 8001 2>/dev/null || pgrep -f "port 8001" || true)
+          if [ -n "$PID" ] && [ "$PID" != " " ]; then
             echo "Killing running process: $PID"
-            kill -9 $PID
+            kill -9 $PID || true
             sleep 1
           fi
           
