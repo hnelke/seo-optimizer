@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO & KI-Readiness Analyzer | Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="glow-bg bg-violet"></div>
+    <div class="glow-bg bg-indigo"></div>
+
+    <!-- STICKY HEADER & NAV WRAPPER -->
+    <div class="sticky-nav-wrapper">
+        <div class="container">
+            <!-- HEADER -->
+            <header>
+                <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                    <div class="logo-container">
+                        <img src="/static/seo-optimizer-logo.png" alt="SEO & KI-Readiness Analyzer Logo" class="header-logo" style="height: 38px; width: auto; border-radius: 6px; display: block; filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.25));">
+                        <div class="logo-text">
+                            <h1>SEO & KI-Readiness Analyzer</h1>
+                            <p>Prüfe deine Webseite auf Google-Findbarkeit und AI Overviews (SGE)</p>
+                        </div>
+                    </div>
+                    <a href="https://nelke.com" target="_blank" class="nelke-logo-link" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: transform 0.3s ease;">
+                        <img src="/static/quadar.png" alt="Nelke Logo" style="height: 36px; width: auto; display: block; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                        <span style="font-family: 'Space Grotesk', 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 500; color: var(--text-primary); display: flex; gap: 0.35rem; align-items: center;">
+                            <span style="font-weight: 700; color: #E50013;">NELKE</span>
+                            <span style="color: var(--text-secondary);">AI Consulting</span>
+                        </span>
+                    </a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <!-- Glossar Link -->
+                    <a href="/glossar" class="nav-btn" id="navGlossaryBtn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span>Glossar</span>
+                    </a>
+                    <!-- Theme Toggle Switch -->
+                    <button class="theme-toggle" id="themeToggleBtn" aria-label="Farbschema umschalten">
+                        <svg class="moon-icon" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <svg class="sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- GLOBAL NAVIGATION -->
+            <nav class="global-nav">
+                <button class="nav-btn active" id="navAuditBtn">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span>Neues Audit starten</span>
+                </button>
+                <button class="nav-btn" id="navHistoryBtn">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Audit-Historie (<span id="historyCount">0</span>)</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- MAIN AUDIT INPUT AREA -->
+        <div id="auditInputArea">
+            <!-- ANALYZE INPUT SECTION -->
+            <section class="card search-card">
+                <h2>Webseiten-Audit starten</h2>
+                <p>Gib die URL deiner Seite ein, um eine Tiefenanalyse bezüglich klassischem SEO, KI-Antwort-Snippet-Eignung und E-E-A-T Signale durchzuführen.</p>
+                <form id="analyzeForm" class="search-form">
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </span>
+                        <input type="text" id="urlInput" placeholder="z. B. wikipedia.org oder https://meineseite.de/blogpost" required autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Audit starten</span>
+                        <span class="loading-spinner-btn" id="btnSpinner"></span>
+                    </button>
+                </form>
+
+                <!-- Advanced settings for Gemini Key -->
+                <div class="advanced-settings-wrapper" style="margin-top: 1rem;">
+                    <div class="advanced-toggle" id="advancedToggle" style="display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); user-select: none;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-icon" style="transition: transform 0.2s;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <span>Erweiterte Einstellungen (Gemini API-Key)</span>
+                    </div>
+                    <div class="advanced-panel" id="advancedPanel" style="display: none; padding-top: 0.75rem;">
+                        <div class="form-control-group">
+                            <label for="geminiApiKeyInput" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.35rem; display: block; font-weight: 500;">Gemini API-Key (Optional, für präzise KI-Textanalyse):</label>
+                            <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." style="width: 100%; padding: 0.6rem 1rem; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-primary); outline: none; transition: border-color 0.2s;">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; display: block;">Hinweis: Hier können Sie Ihren eigenen Gemini API-Key eingeben, damit die Text-Qualitätsanalyse über die offizielle Gemini-Schnittstelle läuft und ausführlichere Ergebnisse liefert. Ohne Key wird eine einfache, lokale Heuristik-Analyse durchgeführt. Der Key wird lokal in Ihrem Browser (`localStorage`) gespeichert und zur Analyse an die Gemini-Schnittstelle gesendet.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-banner" id="errorBanner" style="display: none;">
+                    <span class="error-icon" style="display: inline-flex; align-items: center;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-rose);">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </span>
+                    <span class="error-msg" id="errorMsg">Fehlermeldung hier</span>
+                </div>
+            </section>
+
+            <!-- LOADING STATE -->
+            <section class="card loading-card" id="loadingSection" style="display: none;">
+                <div class="loader-content">
+                    <div class="circular-spinner"></div>
+                    <h3>Analysiere Webseite...</h3>
+                    <p id="loaderStatusText">Rufe HTML ab und durchsuche Inhalte...</p>
+                    <div class="progress-steps">
+                        <div class="step active" id="step1"><span>✓</span> HTML abrufen</div>
+                        <div class="step" id="step2"><span>✓</span> SEO & AEO auswerten</div>
+                        <div class="step" id="step3"><span>✓</span> Schemas prüfen</div>
+                        <div class="step" id="step4"><span>✓</span> E-E-A-T bewerten</div>
+                        <div class="step" id="step5"><span>✓</span> Text-Qualität analysieren</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- RESULTS DASHBOARD -->
+        <main id="dashboardSection" style="display: none;">
+            <!-- METRICS PANEL -->
+            <section class="metrics-panel">
+                <!-- Overall Score Gauge -->
+                <div class="card main-gauge-card">
+                    <h3>Gesamtscore</h3>
+                    <div class="gauge-container">
+                        <svg viewBox="0 0 120 120" class="gauge-svg">
+                            <circle class="gauge-track" cx="60" cy="60" r="50"></circle>
+                            <circle class="gauge-fill" id="overallScoreFill" cx="60" cy="60" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"></circle>
+                        </svg>
+                        <div class="gauge-text">
+                            <span class="score-value" id="overallScoreVal">0</span>
+                            <span class="score-label">Ready</span>
+                        </div>
+                    </div>
+                    <p class="gauge-feedback" id="overallFeedback">Deine Seite ist mäßig auf KI-Suchen vorbereitet.</p>
+                    <a href="/glossar#scoring" class="score-info-link" style="font-size: 0.82rem; color: var(--accent-indigo); text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.75rem; font-weight: 500; transition: color 0.2s; border: 1px dashed rgba(99, 102, 241, 0.3); padding: 0.35rem 0.75rem; border-radius: 6px; background: rgba(99, 102, 241, 0.03);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Wie berechnet sich der Score?</span>
+                    </a>
+                </div>
+
+                <!-- Dimension Progress Bars -->
+                <div class="card sub-scores-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <h3 style="margin-bottom: 0;">Audit-Dimensionen</h3>
+                        <a href="/glossar#scoring" class="score-info-link" style="font-size: 0.82rem; color: var(--accent-indigo); text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 500; transition: color 0.2s; border: 1px dashed rgba(99, 102, 241, 0.3); padding: 0.35rem 0.75rem; border-radius: 6px; background: rgba(99, 102, 241, 0.03);">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>Gewichtung &amp; Berechnung</span>
+                        </a>
+                    </div>
+                    
+                    <div class="score-bar-group">
+                        <div class="score-bar-header">
+                            <span><a href="/glossar#seo" style="color: inherit; text-decoration: underline; text-decoration-style: dotted;">Klassisches SEO</a> (20%)</span>
+                            <span class="score-bar-val" id="seoScoreVal">0/100</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" id="seoScoreBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="score-bar-group">
+                        <div class="score-bar-header">
+                            <span><a href="/glossar#aeo" style="color: inherit; text-decoration: underline; text-decoration-style: dotted;">AEO / KI-Antwortfähigkeit</a> (25%)</span>
+                            <span class="score-bar-val" id="aeoScoreVal">0/100</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" id="aeoScoreBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="score-bar-group">
+                        <div class="score-bar-header">
+                            <span><a href="/glossar#schema" style="color: inherit; text-decoration: underline; text-decoration-style: dotted;">Strukturierte Daten / Schema</a> (15%)</span>
+                            <span class="score-bar-val" id="schemaScoreVal">0/100</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" id="schemaScoreBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="score-bar-group">
+                        <div class="score-bar-header">
+                            <span><a href="/glossar#eeat" style="color: inherit; text-decoration: underline; text-decoration-style: dotted;">E-E-A-T & Vertrauenssignale</a> (20%)</span>
+                            <span class="score-bar-val" id="eeatScoreVal">0/100</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" id="eeatScoreBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="score-bar-group">
+                        <div class="score-bar-header">
+                            <span><a href="/glossar#text-eval" style="color: inherit; text-decoration: underline; text-decoration-style: dotted;">Text-Qualität & Tonalität</a> (20%)</span>
+                            <span class="score-bar-val" id="textScoreVal">0/100</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar" id="textScoreBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ISSUES OVERVIEW -->
+            <section class="card issues-overview">
+                <h3>Handlungsbedarf</h3>
+                <div class="issues-grid">
+                    <div class="issue-column col-critical">
+                        <h4 class="col-title"><span class="badge badge-danger">Dringend</span> Kritische Fehler</h4>
+                        <ul id="criticalList" class="issue-list">
+                            <li>Keine kritischen Fehler gefunden.</li>
+                        </ul>
+                    </div>
+                    <div class="issue-column col-optimization">
+                        <h4 class="col-title"><span class="badge badge-warning">Empfohlen</span> Optimierungspotenzial</h4>
+                        <ul id="optimizationList" class="issue-list">
+                            <li>Keine Optimierungen vorgeschlagen.</li>
+                        </ul>
+                    </div>
+                    <div class="issue-column col-success">
+                        <h4 class="col-title"><span class="badge badge-success">Erfolgreich</span> Best Practices</h4>
+                        <ul id="successList" class="issue-list">
+                            <li>Keine erfolgreichen Audits gelistet.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TABS CONTAINER -->
+            <section class="card tabs-card">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="overviewTab">Übersicht</button>
+                    <button class="tab-btn" data-tab="structureTab">Struktur & Outline</button>
+                    <button class="tab-btn" data-tab="aeoTab">KI-Text-Audit (AEO)</button>
+                    <button class="tab-btn" data-tab="schemaTab">Schema-Explorer</button>
+                    <button class="tab-btn" data-tab="eeatTab">E-E-A-T Audit</button>
+                    <button class="tab-btn" data-tab="textEvalTab">Text-Bewertung</button>
+                    <button class="tab-btn" data-tab="generatorTab">Schema-Generator</button>
+                </div>
+
+                <div class="tabs-body">
+                    <!-- T1: OVERVIEW -->
+                    <div class="tab-content active" id="overviewTab">
+                        <h3>Zusammenfassung der Kennzahlen</h3>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <span class="stat-num" id="statH1Count">0</span>
+                                <span class="stat-name">H1 Überschriften</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="statQuestions">0</span>
+                                <span class="stat-name">Frage-Überschriften</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="statImages">0</span>
+                                <span class="stat-name">Bilder insgesamt</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="statSchemaCount">0</span>
+                                <span class="stat-name">Schema-Objekte</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="statAvgSentence">0</span>
+                                <span class="stat-name">Ø Wörter/Satz</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num" id="statExternalLinks">0</span>
+                                <span class="stat-name">Externe Quellen-Links</span>
+                            </div>
+                        </div>
+                        <div class="overview-meta">
+                            <div class="meta-row">
+                                <div class="meta-text-side">
+                                    <h4>Geprüfte Seite:</h4>
+                                    <code id="metaAuditedUrl">https://example.com</code>
+                                </div>
+                                <div class="meta-action-side">
+                                    <button class="btn btn-primary btn-sm" id="reAuditDashboardBtn">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.25rem;">
+                                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                                        </svg>
+                                        <span>Seite neu analysieren</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- T2: AEO TEXT AUDIT -->
+                    <div class="tab-content" id="aeoTab">
+                        <h3>KI-Text-Audit: Direct Answer Snippets</h3>
+                        <p class="tab-desc">Google <a href="/glossar#sge" style="color: var(--accent-indigo); text-decoration: none;">AI Overviews</a> bevorzugen präzise Direktantworten im Anschluss an Fragen. Hier sind die auf deiner Seite gefundenen <a href="/glossar#qa-pairs" style="color: var(--accent-indigo); text-decoration: none;">Q&A-Blöcke</a>:</p>
+                        <div class="qa-pairs-list" id="qaPairsList">
+                            <!-- JS injected Q&A items -->
+                        </div>
+                    </div>
+
+                    <!-- T2b: TEXT QUALITY EVALUATION -->
+                    <div class="tab-content" id="textEvalTab">
+                        <h3>Text-Qualitätsanalyse & Tonalität</h3>
+                        <p class="tab-desc">Bewertet die Webseitentexte nach vier zentralen Qualitätskriterien (Klarheit, Originalität, emotionale Wirkung und Konkretheit). Eine gute Textqualität verbessert sowohl die Nutzererfahrung als auch das KI-Ranking.</p>
+                        
+                        <div class="ai-status-banner" id="textEvalAiBanner" style="margin-bottom: 1.5rem; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <div class="text-criteria-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+                            <!-- Criterion 1: Klarheit -->
+                            <div class="criterion-card" style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div class="crit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <h4 class="crit-title" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Klarheit</h4>
+                                        <div class="crit-stars" id="starsKlarheit" style="display: flex; gap: 0.15rem; color: var(--accent-amber); font-size: 1.1rem;"></div>
+                                    </div>
+                                    <p class="crit-desc" id="descKlarheit" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; min-height: 50px;">Lade Bewertung...</p>
+                                </div>
+                                <div>
+                                    <h5 style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Empfehlungen:</h5>
+                                    <ul class="crit-recs" id="recsKlarheit" style="list-style: none; padding: 0; margin: 0;">
+                                        <!-- Injected by JS -->
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Criterion 2: Originalität -->
+                            <div class="criterion-card" style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div class="crit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <h4 class="crit-title" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Originalität</h4>
+                                        <div class="crit-stars" id="starsOriginalitaet" style="display: flex; gap: 0.15rem; color: var(--accent-amber); font-size: 1.1rem;"></div>
+                                    </div>
+                                    <p class="crit-desc" id="descOriginalitaet" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; min-height: 50px;">Lade Bewertung...</p>
+                                </div>
+                                <div>
+                                    <h5 style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Empfehlungen:</h5>
+                                    <ul class="crit-recs" id="recsOriginalitaet" style="list-style: none; padding: 0; margin: 0;">
+                                        <!-- Injected by JS -->
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Criterion 3: Emotionale Wirkung -->
+                            <div class="criterion-card" style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div class="crit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <h4 class="crit-title" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Emotionale Wirkung</h4>
+                                        <div class="crit-stars" id="starsEmotion" style="display: flex; gap: 0.15rem; color: var(--accent-amber); font-size: 1.1rem;"></div>
+                                    </div>
+                                    <p class="crit-desc" id="descEmotion" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; min-height: 50px;">Lade Bewertung...</p>
+                                </div>
+                                <div>
+                                    <h5 style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Empfehlungen:</h5>
+                                    <ul class="crit-recs" id="recsEmotion" style="list-style: none; padding: 0; margin: 0;">
+                                        <!-- Injected by JS -->
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Criterion 4: Konkretheit -->
+                            <div class="criterion-card" style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div class="crit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                        <h4 class="crit-title" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Konkretheit</h4>
+                                        <div class="crit-stars" id="starsKonkretheit" style="display: flex; gap: 0.15rem; color: var(--accent-amber); font-size: 1.1rem;"></div>
+                                    </div>
+                                    <p class="crit-desc" id="descKonkretheit" style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; min-height: 50px;">Lade Bewertung...</p>
+                                </div>
+                                <div>
+                                    <h5 style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Empfehlungen:</h5>
+                                    <ul class="crit-recs" id="recsKonkretheit" style="list-style: none; padding: 0; margin: 0;">
+                                        <!-- Injected by JS -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- T3: SCHEMA EXPLORER -->
+                    <div class="tab-content" id="schemaTab">
+                        <h3>Schema-Daten Explorer</h3>
+                        <p class="tab-desc">Hier sind die strukturierten <a href="/glossar#json-ld" style="color: var(--accent-indigo); text-decoration: none;">JSON-LD</a> <a href="/glossar#schema" style="color: var(--accent-indigo); text-decoration: none;">Schemas</a>, die auf deiner Seite im HTML-Code gefunden wurden. Diese helfen Suchmaschinen, logische Entitäten eindeutig zuzuordnen.</p>
+                        <div id="schemaListContainer">
+                            <!-- JS injected schema objects -->
+                        </div>
+                    </div>
+
+                    <!-- T4: STRUCTURE & OUTLINE -->
+                    <div class="tab-content" id="structureTab">
+                        <h3>Überschriften-Struktur (Hierarchie-Check)</h3>
+                        <p class="tab-desc">Die korrekte <a href="/glossar#outline" style="color: var(--accent-indigo); text-decoration: none;">Überschriftenhierarchie</a> ist entscheidend für das Verständnis semantischer Ebenen durch Suchmaschinen und KI-Crawler.</p>
+                        <div class="outline-tree" id="outlineTreeContainer">
+                            <!-- JS injected outline -->
+                        </div>
+                    </div>
+
+                    <!-- T5: E-E-A-T AUDIT -->
+                    <div class="tab-content" id="eeatTab">
+                        <h3>E-E-A-T Audit (Expertise, Autorität, Vertrauen)</h3>
+                        <p class="tab-desc">Dieser Bereich prüft das Vorhandensein von <a href="/glossar#trust-links" style="color: var(--accent-indigo); text-decoration: none;">Vertrauenssignalen</a> wie Impressum und Autorenprofile sowie vertrauenswürdige <a href="/glossar#citations" style="color: var(--accent-indigo); text-decoration: none;">Quellennachweise</a> gemäß den <a href="/glossar#eeat" style="color: var(--accent-indigo); text-decoration: none;">Google E-E-A-T-Richtlinien</a>.</p>
+                        <div class="eeat-details">
+                            <div class="eeat-group">
+                                <h4>Erkannte Vertrauens-Links:</h4>
+                                <div class="trust-tags" id="eeatTrustTags">
+                                    <!-- JS tags -->
+                                </div>
+                            </div>
+                            <div class="eeat-group" style="margin-top: 1.5rem;">
+                                <h4>Erkannte Quellennachweise (Autoritative Links):</h4>
+                                <ul class="citation-links-list" id="eeatCitationsList">
+                                    <!-- JS citations -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- T6: SCHEMA GENERATOR -->
+                    <div class="tab-content" id="generatorTab">
+                        <h3>FAQ-Schema Generator (JSON-LD)</h3>
+                        <p class="tab-desc">Erstelle hier direkt gültiges FAQ-Schema-Markup für deine Seite. Füge Fragen und Antworten hinzu, um es zu generieren und zu kopieren.</p>
+                        <div class="generator-workspace">
+                            <div class="generator-form-side">
+                                <div id="faqQuestionsContainer">
+                                    <div class="faq-input-group">
+                                        <div class="form-control-group">
+                                            <label>Frage 1</label>
+                                            <input type="text" class="faq-question-input" placeholder="z. B. Was kostet Dienstleistung X?">
+                                        </div>
+                                        <div class="form-control-group">
+                                            <label>Antwort 1</label>
+                                            <textarea class="faq-answer-input" rows="3" placeholder="z. B. Dienstleistung X kostet im Durchschnitt..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" id="addQuestionBtn">+ Frage hinzufügen</button>
+                                <button type="button" class="btn btn-emerald" id="generateSchemaBtn">Schema Generieren</button>
+                            </div>
+                            <div class="generator-output-side">
+                                <div class="output-header">
+                                    <span>JSON-LD Output</span>
+                                    <button class="btn btn-sm btn-outline" id="copySchemaBtn">Kopieren</button>
+                                </div>
+                                <pre><code id="schemaOutputText">// Generierter JSON-LD Code wird hier angezeigt...</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- AUDIT HISTORY SECTION -->
+        <section class="card history-section" id="historySection" style="display: none;">
+            <h2 style="display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>Audit-Historie</span>
+            </h2>
+            <p>Hier siehst du alle bisher analysierten Domains. Klicke auf eine Domain, um deren Prüfungs-Verlauf auszuklappen. Du kannst zwei Versionen markieren, um deren Änderungen direkt zu vergleichen.</p>
+            
+            <div class="compare-actions-bar" id="compareActionsBar" style="display: none;">
+                <span class="compare-info" id="compareInfoText">Wähle 2 Berichte aus, um den Fortschritt zu vergleichen.</span>
+                <button class="btn btn-primary btn-sm" id="triggerCompareBtn">Ausgewählte vergleichen</button>
+            </div>
+            
+            <!-- History Filters Bar -->
+            <div class="history-filters-bar">
+                <div class="filter-group-item search-group">
+                    <label for="historySearchInput">Domain suchen</label>
+                    <input type="text" id="historySearchInput" placeholder="z. B. nelke.com">
+                </div>
+                
+                <div class="filter-group-item score-filter-group">
+                    <label>Score-Filter</label>
+                    <div class="score-inputs">
+                        <select id="historyScoreOp">
+                            <option value="all">Alle Scores</option>
+                            <option value="gte">&ge; (Größer gleich)</option>
+                            <option value="gt">&gt; (Größer als)</option>
+                            <option value="lte">&le; (Kleiner gleich)</option>
+                            <option value="lt">&lt; (Kleiner als)</option>
+                        </select>
+                        <input type="number" id="historyScoreVal" min="0" max="100" placeholder="Wert">
+                    </div>
+                </div>
+
+                <div class="filter-group-item sort-group">
+                    <label for="historySortSelect">Sortierung</label>
+                    <select id="historySortSelect">
+                        <option value="newest">Zuletzt geprüft</option>
+                        <option value="score_desc" selected>Score: Absteigend</option>
+                        <option value="score_asc">Score: Aufsteigend</option>
+                        <option value="alphabetical">Alphabetisch (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Pagination Controls (Einträge pro Seite / Seiten-Nav) -->
+            <div class="pagination-container" id="historyPagination" style="display: none;">
+                <div class="page-size-selector">
+                    <span>Einträge pro Seite:</span>
+                    <div class="page-size-options">
+                        <button class="page-size-btn active" data-size="10">10</button>
+                        <button class="page-size-btn" data-size="50">50</button>
+                        <button class="page-size-btn" data-size="100">100</button>
+                    </div>
+                </div>
+                <div class="pagination-nav">
+                    <button class="btn btn-secondary btn-sm" id="prevPageBtn" title="Vorherige Seite">◀ Zurück</button>
+                    <div id="pageNumbers"></div>
+                    <button class="btn btn-secondary btn-sm" id="nextPageBtn" title="Nächste Seite">Weiter ▶</button>
+                </div>
+            </div>
+
+            <div class="history-list" id="historyList">
+                <!-- Injected via JavaScript -->
+                <p class="empty-history-text">Keine historischen Audits gefunden. Starte dein erstes Audit!</p>
+            </div>
+        </section>
+
+        <!-- COMPARISON SECTION -->
+        <section class="card comparison-section" id="comparisonSection" style="display: none;">
+            <div class="comparison-header">
+                <button class="btn btn-secondary btn-sm" id="backToHistoryBtn">← Zurück zur Historie</button>
+                <h2>Analyse-Vergleich</h2>
+                <p id="comparisonMeta">Vergleich zwischen Version A und Version B</p>
+            </div>
+            
+            <div class="comparison-scores-grid">
+                <div class="comparison-score-card">
+                    <h4>Ältere Version</h4>
+                    <span class="comparison-date" id="compDateOld">09.06.2026, 11:00</span>
+                    <div class="comp-score-value" id="compScoreOld">0</div>
+                </div>
+                <div class="comparison-score-card highlight">
+                    <h4>Neuere Version</h4>
+                    <span class="comparison-date" id="compDateNew">09.06.2026, 11:30</span>
+                    <div class="comp-score-value" id="compScoreNew">0</div>
+                    <div class="comp-delta-badge" id="compScoreDelta">+0</div>
+                </div>
+            </div>
+
+            <!-- Detailed comparison bars -->
+            <div class="comparison-details-card">
+                <h3>Verlauf der Audit-Dimensionen</h3>
+                <div class="comparison-bar-row">
+                    <div class="bar-row-label">Klassisches SEO</div>
+                    <div class="bar-row-values"><span id="compSeoOld">0</span> ➔ <span id="compSeoNew">0</span> <span class="delta-inline" id="compSeoDelta">+0</span></div>
+                </div>
+                <div class="comparison-bar-row">
+                    <div class="bar-row-label">AEO / KI-Antwortfähigkeit</div>
+                    <div class="bar-row-values"><span id="compAeoOld">0</span> ➔ <span id="compAeoNew">0</span> <span class="delta-inline" id="compAeoDelta">+0</span></div>
+                </div>
+                <div class="comparison-bar-row">
+                    <div class="bar-row-label">Strukturierte Daten</div>
+                    <div class="bar-row-values"><span id="compSchemaOld">0</span> ➔ <span id="compSchemaNew">0</span> <span class="delta-inline" id="compSchemaDelta">+0</span></div>
+                </div>
+                <div class="comparison-bar-row">
+                    <div class="bar-row-label">E-E-A-T & Vertrauenssignale</div>
+                    <div class="bar-row-values"><span id="compEeatOld">0</span> ➔ <span id="compEeatNew">0</span> <span class="delta-inline" id="compEeatDelta">+0</span></div>
+                </div>
+                <div class="comparison-bar-row">
+                    <div class="bar-row-label">Text-Qualität & Tonalität</div>
+                    <div class="bar-row-values"><span id="compTextOld">0</span> ➔ <span id="compTextNew">0</span> <span class="delta-inline" id="compTextDelta">+0</span></div>
+                </div>
+            </div>
+
+            <!-- Changelog Lists -->
+            <div class="comparison-changelog-grid">
+                <div class="changelog-col col-improved">
+                    <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-emerald); flex-shrink: 0;">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                        <span>Verbesserungen / Behobene Fehler</span>
+                    </h4>
+                    <ul id="compImprovedList">
+                        <li>Keine Änderungen erfasst.</li>
+                    </ul>
+                </div>
+                <div class="changelog-col col-worsened">
+                    <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-rose); flex-shrink: 0;">
+                            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                            <polyline points="17 18 23 18 23 12"></polyline>
+                        </svg>
+                        <span>Verschlechterungen / Regressionen</span>
+                    </h4>
+                    <ul id="compWorsenedList">
+                        <li>Keine Änderungen erfasst.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>SEO & KI-Readiness Analyzer • <a href="/glossar" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Glossar der Fachbegriffe</a> • Entwickelt von <a href="https://nelke.com" target="_blank" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Nelke AI Consulting</a> • &copy; 2026</p>
+        </footer>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="customConfirmModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-card">
+            <div class="confirm-modal-icon">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <h3 id="confirmModalTitle">Löschen bestätigen</h3>
+            <p id="confirmModalMessage">Möchtest du dieses Element wirklich unwiderruflich löschen?</p>
+            <div class="confirm-modal-actions">
+                <button id="confirmModalCancelBtn" class="btn btn-secondary">Abbrechen</button>
+                <button id="confirmModalConfirmBtn" class="btn btn-danger">Löschen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO & KI-Readiness Analyzer | Glossar</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="glow-bg bg-violet"></div>
+    <div class="glow-bg bg-indigo"></div>
+
+    <!-- STICKY HEADER & NAV WRAPPER -->
+    <div class="sticky-nav-wrapper">
+        <div class="container">
+            <!-- HEADER -->
+            <header class="glossary-header">
+                <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                    <div class="logo-container">
+                        <img src="/static/seo-optimizer-logo.png" alt="SEO & KI-Readiness Analyzer Logo" class="header-logo" style="height: 38px; width: auto; border-radius: 6px; display: block; filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.25));">
+                        <div class="logo-text">
+                            <h1>SEO & KI-Readiness Analyzer</h1>
+                            <p>Fachbegriffe & Abkürzungen verständlich erklärt</p>
+                        </div>
+                    </div>
+                    <a href="https://nelke.com" target="_blank" class="nelke-logo-link" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: transform 0.3s ease;">
+                        <img src="/static/quadar.png" alt="Nelke Logo" style="height: 36px; width: auto; display: block; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                        <span style="font-family: 'Space Grotesk', 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 500; color: var(--text-primary); display: flex; gap: 0.35rem; align-items: center;">
+                            <span style="font-weight: 700; color: #E50013;">NELKE</span>
+                            <span style="color: var(--text-secondary);">AI Consulting</span>
+                        </span>
+                    </a>
+                </div>
+                
+                <div class="glossary-header-actions">
+                    <!-- Glossar Link -->
+                    <a href="/glossar" class="nav-btn active" id="navGlossaryBtn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span>Glossar</span>
+                    </a>
+                    <!-- Theme Toggle Switch -->
+                    <button class="theme-toggle" id="themeToggleBtn" aria-label="Farbschema umschalten">
+                        <svg class="moon-icon" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <svg class="sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- GLOBAL NAVIGATION -->
+            <nav class="global-nav">
+                <a href="/#audit" class="nav-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span>Neues Audit starten</span>
+                </a>
+                <a href="/#history" class="nav-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Audit-Historie</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- SEARCH & FILTER SECTION -->
+        <section class="card glossary-search-bar">
+            <h2>Begriff nachschlagen</h2>
+            <input type="text" id="glossarySearchInput" placeholder="Tippe z. B. 'aeo', 'schema' oder 'EEAT'..." autocomplete="off">
+            <div class="glossary-filters">
+                <button class="filter-btn active" data-filter="all">Alle Begriffe</button>
+                <button class="filter-btn" data-filter="seo">Klassisches SEO</button>
+                <button class="filter-btn" data-filter="aeo">KI & AEO</button>
+                <button class="filter-btn" data-filter="eeat">E-E-A-T</button>
+                <button class="filter-btn" data-filter="tech">Technisches / Schema</button>
+                <button class="filter-btn" data-filter="text">Textbewertung</button>
+                <button class="filter-btn" data-filter="score">Gesamtscore &amp; Gewichtung</button>
+            </div>
+        </section>
+
+        <!-- GLOSSARY ITEMS GRID -->
+        <main class="glossary-grid" id="glossaryGrid">
+
+            <!-- Card 1: SEO -->
+            <div class="card glossary-card" data-category="seo" id="seo">
+                <div class="glossary-card-header">
+                    <h3>SEO (Search Engine Optimization)</h3>
+                    <span class="badge badge-success">SEO</span>
+                </div>
+                <p>Suchmaschinenoptimierung umfasst alle strategischen und technischen Maßnahmen, um die organische (unbezahlte) Sichtbarkeit einer Website bei Suchmaschinen wie Google zu erhöhen. Es teilt sich primär in On-Page-Optimierung (Inhalte, HTML-Struktur, Ladezeiten) und Off-Page-Optimierung (Backlinks) auf.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Fließt als Dimension "Klassisches SEO" zu 25 % in den Gesamtscore ein. Untersucht Metadaten, Bildbeschreibungen und Strukturfehler.
+                </div>
+            </div>
+
+            <!-- Card 2: AEO -->
+            <div class="card glossary-card" data-category="aeo" id="aeo">
+                <div class="glossary-card-header">
+                    <h3>AEO (Answer Engine Optimization)</h3>
+                    <span class="badge badge-warning">KI & AEO</span>
+                </div>
+                <p>Antwortmaschinenoptimierung ist die bewusste Aufbereitung von Webinhalten für generative KI-Systeme und Chat-Suchmaschinen (z. B. Perplexity, ChatGPT Search, Google AI Overviews). Das primäre Ziel ist es nicht mehr, Klicks auf Suchergebnisseiten zu maximieren, sondern direkt als die vertrauenswürdigste Antwortquelle der KI ausgegeben zu werden.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Bildet mit 35 % die wichtigste Einzeldimension. Crawler bewerten hierbei Q&A-Blöcke, Satzlängen, direkte Formulierungen und Klarheit.
+                </div>
+            </div>
+
+            <!-- Card 3: SGE / AI Overviews -->
+            <div class="card glossary-card" data-category="aeo" id="sge">
+                <div class="glossary-card-header">
+                    <h3>AI Overviews / SGE (Search Generative Experience)</h3>
+                    <span class="badge badge-warning">KI & AEO</span>
+                </div>
+                <p>Googles KI-gestützte Ergebnisoberfläche. Statt einer klassischen blauen Linkliste liefert ein KI-Modell eine strukturierte Zusammenfassung über den Suchergebnissen. Für Website-Betreiber ist es essentiell, als Textquelle und Linkkarte direkt in diesen generativen Antworten referenziert zu werden.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Ziel des AEO-Scans. Inhalte werden auf die Kriterien geprüft, nach denen die Google-KI Textquellen für ihre Zusammenfassungen auswählt.
+                </div>
+            </div>
+
+            <!-- Card 4: E-E-A-T -->
+            <div class="card glossary-card" data-category="eeat" id="eeat">
+                <div class="glossary-card-header">
+                    <h3>E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness)</h3>
+                    <span class="badge badge-danger">E-E-A-T</span>
+                </div>
+                <p>Google-Qualitätsrichtlinien zur Inhaltsbewertung. Steht für **E**xperience (praktische Erfahrung), **E**xpertise (Fachwissen), **A**uthoritativeness (Autorität des Autors/der Website) und **T**rustworthiness (Vertrauenswürdigkeit). Besonders wichtig für sensible Seiten (Gesundheit, Recht, Finanzen - 'Your Money or Your Life').</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Bildet zu 20 % die Dimension "E-E-A-T". Analysiert Impressum, Autorenprofile, strukturierte Links und glaubwürdige Quellennachweise.
+                </div>
+            </div>
+
+            <!-- Card 5: JSON-LD -->
+            <div class="card glossary-card" data-category="tech" id="json-ld">
+                <div class="glossary-card-header">
+                    <h3>JSON-LD (Notation für verknüpfte Daten)</h3>
+                    <span class="badge badge-success">Tech / Schema</span>
+                </div>
+                <p>JavaScript Object Notation for Linked Data. Ein leichtgewichtiges Datenformat, mit dem strukturierte Daten semantisch im HTML-Header einer Website eingebettet werden. Es ist der von Google empfohlene Standard, um Suchmaschinen-Crawlern maschinenlesbare Objektdaten zu liefern.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Das Tool extrahiert JSON-LD-Blöcke und listet sie im "Schema-Daten Explorer" zur schnellen Code-Kopplung und Strukturprüfung auf.
+                </div>
+            </div>
+
+            <!-- Card 6: Schema-Markup -->
+            <div class="card glossary-card" data-category="tech" id="schema">
+                <div class="glossary-card-header">
+                    <h3>Schema-Markup / Strukturierte Daten</h3>
+                    <span class="badge badge-success">Tech / Schema</span>
+                </div>
+                <p>Ein standardisiertes Vokabular (festgelegt auf Schema.org), das verwendet wird, um Datenfeldern im Webcode eine eindeutige Bedeutung zuzuordnen (z. B. "Dieser Text ist eine Adresse, diese Nummer ist eine Telefonnummer und diese Zahl ist eine Bewertung"). Suchmaschinen nutzen dies zur Generierung von Rich Snippets.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Geht mit 20 % in den Gesamtscore ein. Das Tool bewertet, wie viele strukturierte Schema-Entitäten im Code hinterlegt sind.
+                </div>
+            </div>
+
+            <!-- Card 7: FAQ-Schema -->
+            <div class="card glossary-card" data-category="tech" id="faq-schema">
+                <div class="glossary-card-header">
+                    <h3>FAQ-Schema</h3>
+                    <span class="badge badge-success">Tech / Schema</span>
+                </div>
+                <p>Ein spezieller Schema-Typ für häufig gestellte Fragen (Frequently Asked Questions). Damit werden Frage-Antwort-Paare maschinenlesbar im Code markiert. Dies erhöht die Chance, dass Google diese Fragen direkt als ausklappbares Menü in den Suchergebnissen darstellt.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Der integrierte "Schema-Generator" im Dashboard ermöglicht es, FAQ-Schemas im validen JSON-LD-Format per Klick zu erstellen und zu kopieren.
+                </div>
+            </div>
+
+            <!-- Card 8: Alt-Attribut (Alt-Text) -->
+            <div class="card glossary-card" data-category="seo" id="alt-text">
+                <div class="glossary-card-header">
+                    <h3>Alt-Attribut (Alternativtext)</h3>
+                    <span class="badge badge-success">SEO</span>
+                </div>
+                <p>Ein HTML-Attribut für Bilder, das einen beschreibenden Text für das jeweilige Bild enthält. Es ist unerlässlich für die Barrierefreiheit (Screenreader für blinde Personen), wird angezeigt, falls das Bild nicht lädt, und hilft Suchmaschinen, den Bildinhalt zu verstehen.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Wird in der SEO-Dimension ausgewertet. Fehlende Alt-Attribute werden als dringende Optimierungspotenziale im Audit ausgegeben.
+                </div>
+            </div>
+
+            <!-- Card 9: Überschriftenhierarchie (Outline) -->
+            <div class="card glossary-card" data-category="seo" id="outline">
+                <div class="glossary-card-header">
+                    <h3>Überschriftenhierarchie</h3>
+                    <span class="badge badge-success">SEO</span>
+                </div>
+                <p>Die logische und visuelle Gliederung des Texts einer Webseite durch HTML-Überschriften (H1 bis H6). Jede Seite sollte genau eine H1 als Hauptüberschrift besitzen. Unterüberschriften (H2, H3 etc.) müssen logisch verschachtelt sein und dürfen keine Stufen überspringen.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Wird im Tab "Struktur & Outline" als interaktiver semantischer Baum gerendert. Fehler in der Schachtelung senken den SEO-Score.
+                </div>
+            </div>
+
+            <!-- Card 10: Q&A-Paare (Question & Answer) -->
+            <div class="card glossary-card" data-category="aeo" id="qa-pairs">
+                <div class="glossary-card-header">
+                    <h3>Q&A-Paare (Frage-Antwort-Strukturen)</h3>
+                    <span class="badge badge-warning">KI & AEO</span>
+                </div>
+                <p>Textabschnitte, die aus einer präzisen Frage (meist als H2- oder H3-Überschrift formuliert) und einer direkten, prägnanten Antwort unmittelbar darunter bestehen. Diese Paare lassen sich von KI-Modellen extrem leicht parsen und extrahieren, was die Chance auf SGE-Nennungen vervielfacht.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Werden im "KI-Text-Audit" (Tab 2) extrahiert und bezüglich Wortanzahl (ideal sind 40 bis 60 Wörter) und Verständlichkeit bewertet.
+                </div>
+            </div>
+
+            <!-- Card 11: Vertrauenssignale (Trust-Links) -->
+            <div class="card glossary-card" data-category="eeat" id="trust-links">
+                <div class="glossary-card-header">
+                    <h3>Vertrauenssignale (Trust-Links)</h3>
+                    <span class="badge badge-danger">E-E-A-T</span>
+                </div>
+                <p>Interne Verlinkungen einer Website, die rechtliche Transparenz und Kontaktmöglichkeiten schaffen. Zu den wichtigsten Trust-Links gehören Links zum Impressum, der Datenschutzerklärung, einem direkten Kontaktformular sowie einer "Über uns"-Seite (zur Darstellung der Unternehmensgeschichte).</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Im Tab "E-E-A-T Audit" wird geprüft, ob diese 4 Pflichtseiten verlinkt sind. Fehlende Links führen zu einer Abwertung der Trust-Scores.
+                </div>
+            </div>
+
+            <!-- Card 12: Quellennachweise (Authority Citations) -->
+            <div class="card glossary-card" data-category="eeat" id="citations">
+                <div class="glossary-card-header">
+                    <h3>Quellennachweise (Authority Citations)</h3>
+                    <span class="badge badge-danger">E-E-A-T</span>
+                </div>
+                <p>Ausgehende Links zu vertrauenswürdigen Drittseiten (z. B. Wikipedia, staatliche Behörden, wissenschaftliche Portale oder Fachmagazine). Diese Links dienen der faktenbasierten Belegung von getätigten Aussagen im Fließtext der Seite und stärken die Glaubwürdigkeit.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Das Tool analysiert externe Links und bewertet ausgehende Referenzierungen als positives Vertrauenssignal im E-E-A-T Audit.
+                </div>
+            </div>
+
+            <!-- Card 13: Lesbarkeits- und Satzlängen-Metriken -->
+            <div class="card glossary-card" data-category="aeo" id="readability">
+                <div class="glossary-card-header">
+                    <h3>Lesbarkeits- & Satzlängen-Metriken</h3>
+                    <span class="badge badge-warning">KI & AEO</span>
+                </div>
+                <p>Analyse der grammatikalischen Komplexität von Texten. Bestimmt vor allem durch die durchschnittliche Wortanzahl pro Satz. Kurze, aktive Sätze mit klaren Subjekt-Prädikat-Objekt-Strukturen lassen sich von Sprachmodellen fehlerfreier verarbeiten als verschachtelte Bandwurmsätze.</p>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Im "KI-Text-Audit" (Tab 2) wird die durchschnittliche Satzlänge bewertet. Ein Mittelwert von unter 18 Wörtern gilt als optimal für AEO.
+                </div>
+            </div>
+
+            <!-- Card 14: Text-Qualitätsanalyse (Textbewertung) -->
+            <div class="card glossary-card" data-category="text" id="text-eval">
+                <div class="glossary-card-header">
+                    <h3>Text-Qualitätsanalyse (Textbewertung)</h3>
+                    <span class="badge" style="background-color: var(--accent-violet); color: white;">Textbewertung</span>
+                </div>
+                <p>Die Textbewertung untersucht die Qualität von Webseitentexten anhand der vier Kriterien Klarheit, Originalität, emotionale Wirkung und Konkretheit. Hierfür gibt es zwei Methoden im Tool:</p>
+                <ul style="list-style: disc; margin-left: 1.5rem; margin-bottom: 1.25rem; font-size: 0.9rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li><strong>Heuristische Methode (ohne Key):</strong> Führt eine kostenlose, lokale Analyse direkt auf dem Webserver durch. Dabei werden mathematische und statistische Kriterien gemessen, wie z. B. die durchschnittliche Satzlänge (für Klarheit), die Vorkommensdichte typischer Marketing-Phrasen und Buzzwords (für Originalität), die Dichte an Leseransprachen und emotionalen Signalwörtern (für Emotion) sowie die Dichte an konkreten Zahlen und Datensätzen (für Konkretheit).</li>
+                    <li><strong>LLM API-Methode (mit Gemini-Key):</strong> Verwendet die offizielle Gemini-Schnittstelle über den eingegebenen API-Key. Ein großes Sprachmodell führt ein intelligentes, semantisches Audit des Textes durch. Dies liefert tiefergehende Einsichten, versteht den tatsächlichen Kontext besser und gibt detaillierte, passgenaue Optimierungsempfehlungen.</li>
+                </ul>
+                <div class="glossary-context">
+                    <strong>Relevanz im Audit:</strong> Geht mit 20 % als eigenständige Dimension "Text-Qualität & Tonalität" in den Gesamtscore ein. Ein optimaler Text verbessert die Lesbarkeit für Menschen und die Verwertung durch KI-Crawler.
+                </div>
+            </div>
+
+            <!-- Card 0: Scoring & Weights -->
+            <div class="card glossary-card" data-category="score" id="scoring" style="grid-column: 1 / -1;">
+                <div class="glossary-card-header">
+                    <h3>Bewertungssystem: Die 5 Säulen &amp; Gewichtung</h3>
+                    <span class="badge" style="background: linear-gradient(135deg, var(--accent-violet), var(--accent-indigo)); color: white;">System</span>
+                </div>
+                <p>Der Gesamt-Score (Overall Score) des Audits berechnet sich gewichtet aus fünf verschiedenen Analyse-Säulen, die jeweils unterschiedliche Gewichtungen besitzen. So wird sichergestellt, dass moderne KI-Bereitschaft (AEO), klassische Optimierung, Vertrauenssignale und Textqualität ausgewogen einfließen:</p>
+                
+                <div class="table-responsive">
+                    <table class="score-table">
+                        <thead>
+                            <tr>
+                                <th>Bewertungssäule</th>
+                                <th>Gewichtung</th>
+                                <th>Fokus / Überprüfte Kriterien</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Klassisches SEO</strong></td>
+                                <td style="font-weight: 600; color: var(--accent-emerald);">20 %</td>
+                                <td>Metadaten (Title, Description), Überschriften (H1-Check), Alternativtexte für Bilder und Linkstrukturen.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. AEO (KI-Optimierung)</strong></td>
+                                <td style="font-weight: 600; color: var(--accent-emerald);">25 %</td>
+                                <td>Eignung für AI Overviews und Chat-Suchmaschinen. Untersucht Frage-Antwort-Strukturen und Satzlängen.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Strukturierte Daten</strong></td>
+                                <td style="font-weight: 600; color: var(--accent-emerald);">15 %</td>
+                                <td>Vorhandensein und Validität von maschinenlesbarem Schema-Markup (FAQPage, LocalBusiness etc.) im JSON-LD-Format.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. E-E-A-T (Vertrauenssignale)</strong></td>
+                                <td style="font-weight: 600; color: var(--accent-emerald);">20 %</td>
+                                <td>Glaubwürdigkeit durch Pflichtseiten (Impressum, Datenschutz, Kontakt), Autorenprofile und Verlinkung seriöser Quellen.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Text-Qualität &amp; Tonalität</strong></td>
+                                <td style="font-weight: 600; color: var(--accent-emerald);">20 %</td>
+                                <td>Sprachliche Klarheit (Satzlängen), inhaltliche Konkretheit, Originalität (Buzzword-Dichte) und emotionale Ansprache.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>SEO & KI-Readiness Analyzer • <a href="/" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Glossar der Fachbegriffe</a> • Entwickelt von <a href="https://nelke.com" target="_blank" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Nelke AI Consulting</a> • &copy; 2026</p>
+        </footer>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('glossarySearchInput');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.glossary-card');
+
+            let activeCategory = 'all';
+
+            function filterGlossary() {
+                const query = searchInput.value.toLowerCase().trim();
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const text = card.querySelector('p').textContent.toLowerCase();
+                    const contextEl = card.querySelector('.glossary-context');
+                    const context = contextEl ? contextEl.textContent.toLowerCase() : '';
+                    const cat = card.getAttribute('data-category');
+
+                    const matchesQuery = !query || title.includes(query) || text.includes(query) || context.includes(query);
+                    const matchesCat = activeCategory === 'all' || cat === activeCategory;
+
+                    if (matchesQuery && matchesCat) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            searchInput.addEventListener('input', filterGlossary);
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeCategory = btn.getAttribute('data-filter');
+                    filterGlossary();
+                });
+            });
+
+            // Theme manager
+            const htmlElement = document.documentElement;
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                htmlElement.classList.add('light-mode');
+            }
+            themeToggleBtn.addEventListener('click', () => {
+                if (htmlElement.classList.contains('light-mode')) {
+                    htmlElement.classList.remove('light-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.add('light-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Auto-scroll to hash if present
+            if (window.location.hash) {
+                const targetId = window.location.hash.substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    // Close filtering temporarily if target matches a category
+                    const targetCat = targetElement.getAttribute('data-category');
+                    if (targetCat) {
+                        const targetBtn = document.querySelector(`.filter-btn[data-filter="${targetCat}"]`);
+                        if (targetBtn) {
+                            filterButtons.forEach(b => b.classList.remove('active'));
+                            targetBtn.classList.add('active');
+                            activeCategory = targetCat;
+                            filterGlossary();
+                        }
+                    }
+                    
+                    setTimeout(() => {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetElement.classList.add('highlight-flash');
+                    }, 200);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

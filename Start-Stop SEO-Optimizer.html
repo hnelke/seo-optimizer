@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start/Stop SEO-Optimizer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0b0f19;
+            --bg-surface: rgba(20, 26, 42, 0.6);
+            --bg-card: #131b2e;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-primary: #6366f1;
+            --accent-primary-hover: #4f46e5;
+            --accent-emerald: #10b981;
+            --code-bg: #070a13;
+            --glow-color: rgba(99, 102, 241, 0.15);
+        }
+
+        .light-mode {
+            --bg-base: #f3f4f6;
+            --bg-surface: rgba(255, 255, 255, 0.7);
+            --bg-card: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-primary: #4f46e5;
+            --accent-primary-hover: #3730a3;
+            --code-bg: #f9fafb;
+            --glow-color: rgba(79, 70, 229, 0.1);
+        }
+
+        .light-mode pre {
+            color: #4f46e5;
+        }
+
+        .light-mode .btn-copy {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .sun-icon {
+            display: none;
+        }
+
+        .moon-icon {
+            display: block;
+        }
+
+        .light-mode .sun-icon {
+            display: block;
+        }
+
+        .light-mode .moon-icon {
+            display: none;
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Decorative glowing backgrounds */
+        .glow-bg {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .bg-indigo {
+            top: -100px;
+            left: -100px;
+            background: rgba(99, 102, 241, 0.3);
+        }
+
+        .bg-violet {
+            bottom: -100px;
+            right: -100px;
+            background: rgba(139, 92, 246, 0.3);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            z-index: 1;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .config-section {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .config-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #a5b4fc;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        .input-group input {
+            background: var(--bg-base);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--glow-color);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .code-container {
+            position: relative;
+            background: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #818cf8;
+            padding-right: 2.5rem;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .btn-copy svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap:round;
+            stroke-linejoin:round;
+        }
+
+        .badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        footer {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success feedback animation for copying */
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background-color: var(--accent-emerald); }
+            100% { transform: scale(1); }
+        }
+
+        .copy-success {
+            animation: pulseSuccess 0.4s ease-in-out;
+            background-color: var(--accent-emerald) !important;
+            color: white !important;
+            border-color: var(--accent-emerald) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg bg-indigo"></div>
+    <div class="glow-bg bg-violet"></div>
+
+    <div class="container" style="position: relative;">
+        <!-- Theme Toggle Switch -->
+        <button class="theme-toggle" id="themeToggleBtn" aria-label="Farbschema umschalten">
+            <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </button>
+        <header>
+            <h1>Start/Stop SEO-Optimizer</h1>
+            <p>SSH-Verbindung &amp; App-Neustart Befehle für deinen VM Server</p>
+        </header>
+
+        <!-- CONFIGURATION FORM -->
+        <section class="config-section">
+            <div class="config-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>VM Verbindungsdaten anpassen (für dynamische Befehle)</span>
+            </div>
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label for="sshUser">Benutzer</label>
+                    <input type="text" id="sshUser" value="root">
+                </div>
+                <div class="input-group">
+                    <label for="sshIp">VM IP-Adresse</label>
+                    <input type="text" id="sshIp" value="217.160.62.38">
+                </div>
+                <div class="input-group">
+                    <label for="sshPort">SSH Port</label>
+                    <input type="number" id="sshPort" value="22">
+                </div>
+                <div class="input-group">
+                    <label for="sshKey">Key-Datei (Optional)</label>
+                    <input type="text" id="sshKey" placeholder="z. B. key.pem">
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMAND CARDS -->
+
+        <!-- SSH LOGIN -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-primary)">
+                        <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                        <line x1="7" y1="2" x2="7" y2="22"></line>
+                        <line x1="17" y1="2" x2="17" y2="22"></line>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                    </svg>
+                    1. SSH Login
+                </span>
+                <span class="badge">CMD / PowerShell / Terminal</span>
+            </div>
+            <div class="card-subtitle">Gib diesen Befehl in deiner Eingabeaufforderung (CMD) oder PowerShell ein, um dich mit deinem Server zu verbinden.</div>
+            <div class="code-container">
+                <pre id="sshCmd">ssh root@217.160.62.38</pre>
+                <button class="btn-copy" onclick="copyText('sshCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESTART OPTION A: SYSTEMD -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-emerald)">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    2. Neustart via Systemd (Empfohlen)
+                </span>
+                <span class="badge badge-green">Dienst / Service</span>
+            </div>
+            <div class="card-subtitle">Verwende diesen Befehl, wenn das Tool als systemweiter Hintergrunddienst auf dem Server eingerichtet ist.</div>
+            <div class="code-container">
+                <pre id="systemdCmd">sudo systemctl restart seo-optimizer</pre>
+                <button class="btn-copy" onclick="copyText('systemdCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESTART OPTION B: MANUAL PROCESS -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #f59e0b">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    3. Manueller Prozess-Neustart (nohup / screen)
+                </span>
+                <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">Script / Hintergrundprozess</span>
+            </div>
+            <div class="card-subtitle">Verwende diese Befehle nacheinander, um einen direkt ausgeführten Python-Prozess zu finden, zu beenden und im Hintergrund neu zu starten.</div>
+            
+            <div style="font-size: 0.8rem; margin: 1rem 0 0.25rem 0.25rem; font-weight: 600; color: var(--text-secondary);">A. Laufenden Prozess suchen:</div>
+            <div class="code-container">
+                <pre id="findCmd">ps aux | grep seo-optimizer</pre>
+                <button class="btn-copy" onclick="copyText('findCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+
+            <div style="font-size: 0.8rem; margin: 1rem 0 0.25rem 0.25rem; font-weight: 600; color: var(--text-secondary);">B. Laufenden Prozess beenden:</div>
+            <div class="code-container">
+                <pre id="killCmd">pkill -f seo-optimizer</pre>
+                <button class="btn-copy" onclick="copyText('killCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+
+            <div style="font-size: 0.8rem; margin: 1rem 0 0.25rem 0.25rem; font-weight: 600; color: var(--text-secondary);">C. In den Projektordner wechseln:</div>
+            <div class="code-container">
+                <pre id="cdCmd">cd /var/www/seo-optimizer</pre>
+                <button class="btn-copy" onclick="copyText('cdCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+
+            <div style="font-size: 0.8rem; margin: 1rem 0 0.25rem 0.25rem; font-weight: 600; color: var(--text-secondary);">D. Applikation im Hintergrund neu starten (Port 8001):</div>
+            <div class="code-container">
+                <pre id="startCmd">nohup venv/bin/uvicorn main:app --host 0.0.0.0 --port 8001 > uvicorn.log 2>&1 &</pre>
+                <button class="btn-copy" onclick="copyText('startCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>SEO &amp; KI-Readiness Analyzer • Entwickelt von <a href="https://nelke.com" target="_blank">Nelke AI Consulting</a></p>
+        </footer>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        const sshUser = document.getElementById('sshUser');
+        const sshIp = document.getElementById('sshIp');
+        const sshPort = document.getElementById('sshPort');
+        const sshKey = document.getElementById('sshKey');
+        const sshCmd = document.getElementById('sshCmd');
+
+        function updateSshCommand() {
+            const user = sshUser.value.trim() || 'root';
+            const ip = sshIp.value.trim() || '217.160.62.38';
+            const port = parseInt(sshPort.value, 10) || 22;
+            const key = sshKey.value.trim();
+
+            let cmd = 'ssh';
+            if (key) {
+                cmd += ` -i "${key}"`;
+            }
+            if (port !== 22) {
+                cmd += ` -p ${port}`;
+            }
+            cmd += ` ${user}@${ip}`;
+            
+            sshCmd.textContent = cmd;
+        }
+
+        [sshUser, sshIp, sshPort, sshKey].forEach(input => {
+            input.addEventListener('input', updateSshCommand);
+        });
+
+        function copyText(elementId, btn) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('copy-success');
+                setTimeout(() => {
+                    btn.classList.remove('copy-success');
+                }, 1500);
+            }).catch(err => {
+                console.error('Kopieren fehlgeschlagen: ', err);
+            });
+        }
+
+        // Theme Manager
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            htmlElement.classList.add('light-mode');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('light-mode')) {
+                htmlElement.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

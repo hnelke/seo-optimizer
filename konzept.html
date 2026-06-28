@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konzept: SEO &amp; KI-Readiness Analyzer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Theme Variables */
+            --bg-base: #0b0f19;
+            --bg-surface: rgba(20, 26, 42, 0.6);
+            --bg-card: #131b2e;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-primary: #6366f1;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --code-bg: #070a13;
+            --glow-color: rgba(99, 102, 241, 0.15);
+            --transition-speed: 0.3s;
+        }
+
+        .light-mode {
+            /* Light Theme Variables */
+            --bg-base: #f3f4f6;
+            --bg-surface: rgba(255, 255, 255, 0.7);
+            --bg-card: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-primary: #4f46e5;
+            --accent-cyan: #0891b2;
+            --accent-emerald: #059669;
+            --accent-rose: #e11d48;
+            --code-bg: #f3f4f6;
+            --glow-color: rgba(79, 70, 229, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(at 10% 20%, var(--glow-color) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, var(--glow-color) 0px, transparent 50%);
+            background-attachment: fixed;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.25;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: color var(--transition-speed) ease;
+        }
+
+        a:hover {
+            color: var(--accent-primary);
+        }
+
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            border: 1px solid var(--card-border);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            color: var(--accent-rose);
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--card-border);
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        pre code {
+            border: none;
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        header {
+            background-color: var(--bg-surface);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin-bottom: 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .sun-icon {
+            display: none;
+        }
+
+        .moon-icon {
+            display: block;
+        }
+
+        .light-mode .sun-icon {
+            display: block;
+        }
+
+        .light-mode .moon-icon {
+            display: none;
+        }
+
+        .section-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--card-shadow);
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+
+        .section-card h2 {
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .icon {
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: var(--code-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .info-box {
+            background-color: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.25rem 1.75rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .info-box p {
+            margin-bottom: 0;
+            color: var(--text-primary);
+        }
+
+        .info-box p strong {
+            color: var(--accent-primary);
+        }
+
+        .warning-box {
+            background-color: rgba(244, 63, 94, 0.05);
+            border-left: 4px solid var(--accent-rose);
+            padding: 1.25rem 1.75rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box p {
+            margin-bottom: 0;
+            color: var(--text-primary);
+        }
+
+        .warning-box p strong {
+            color: var(--accent-rose);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--card-border);
+            margin-top: 5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <h1>Projektkonzept: SEO-Optimizer</h1>
+            <!-- Theme Toggle Switch -->
+            <button class="theme-toggle" id="themeToggleBtn" aria-label="Farbschema umschalten">
+                <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- 1. ÜBERSICHT -->
+        <section class="section-card">
+            <h2>
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                System-Vision
+            </h2>
+            <p>
+                Der <strong>SEO &amp; KI-Readiness Analyzer</strong> ist ein webbasiertes Tool, mit dem Webseiten auf klassische Suchmaschinenoptimierung (SEO) sowie auf ihre Bereitschaft für KI-gestützte Suchanfragen (AEO - Answer Engine Optimization) hin gescannt und bewertet werden.
+            </p>
+            <p>
+                Durch den vermehrten Einsatz von KI-Overviews (wie Google Search Generative Experience, ChatGPT Search, Claude und Perplexity) reicht klassisches Keyword-SEO nicht mehr aus. Dieses Tool analysiert die maschinelle Extrahierbarkeit und Vertrauenswürdigkeit einer Webseite und berechnet einen transparenten Qualitäts-Score.
+            </p>
+        </section>
+
+        <!-- 2. DIE 5 BEWERTUNGS-BEREICHE -->
+        <section class="section-card">
+            <h2>
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                Die 5 Bewertungs-Säulen &amp; Gewichtung
+            </h2>
+            <p>
+                Der Gesamt-Score (Overall Score) berechnet sich gewichtet aus fünf verschiedenen Reports, die über das Backend analysiert werden:
+            </p>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kategorie</th>
+                            <th>Gewichtung</th>
+                            <th>Überprüfte Kriterien</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Klassisches SEO</strong></td>
+                            <td>20% Gewicht</td>
+                            <td>Page Title, Meta Description, H1-Vorkommen, Image Alt-Attribute, Linkstruktur.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. AEO (KI-Optimierung)</strong></td>
+                            <td>25% Gewicht</td>
+                            <td>Fragebasierte Überschriften gefolgt von prägnanten, direkten Definitions-Snippets (30-80 Wörter) und die durchschnittliche Satzlänge (Readability).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. E-E-A-T (Glaubwürdigkeit)</strong></td>
+                            <td>20% Gewicht</td>
+                            <td>Vertrauensseiten (Impressum, Datenschutz, Kontakt), Autorenboxen, Zitate/Links zu hoch-autoritativen Quellen und statistische Zahlen/Prozentwerte.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Text-Qualität</strong></td>
+                            <td>20% Gewicht</td>
+                            <td>Sprachliche Klarheit (Satzlänge), Originalität (Vermeidung von Worthülsen/Marketing-Buzzwords), Tonalität (emotionale Ansprache > 2.0%) und inhaltliche Konkretheit.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Strukturierte Daten</strong></td>
+                            <td>15% Gewicht</td>
+                            <td>Vorhandensein von JSON-LD-Skripten und KI-kritischen Schema-Typen (FAQPage, Product, Recipe, Article, HowTo, LocalBusiness).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. DIE 94% E-COMMERCE HÜRDE -->
+        <section class="section-card">
+            <h2>
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Die "94%-B2B-Grenze" (Warum 100% nicht immer gut sind)
+            </h2>
+            <p>
+                Ein häufiges Missverständnis bei Anwendern ist das Verlangen nach einem 100%-Gesamtscore. Bei Dienstleistungs- und B2B-Landingpages liegt das <strong>sinnvolle Maximum jedoch bei 94%</strong>. 
+            </p>
+            <div class="info-box">
+                <p><strong>Die mathematische Erklärung:</strong><br>
+                Um im Bereich <em>Strukturierte Daten (15% Gewicht)</em> die vollen 100 Punkte zu erhalten, fordert der Analyzer das Vorhandensein von mindestens <strong>drei verschiedenen</strong> KI-kritischen Schema-Typen. Eine normale Dienstleisterseite besitzt typischerweise nur `FAQPage` und `LocalBusiness` / `ProfessionalService`. Dies begrenzt den Teilergebnis-Score dieser Kategorie auf **60 von 100 Punkten**.</p>
+            </div>
+            <p>
+                Die Berechnung bei ansonsten perfekten Teilergebnissen lautet:
+                <br>
+                <code>(100 * 0.20) + (100 * 0.25) + (100 * 0.20) + (100 * 0.20) + (60 * 0.15) = 20 + 25 + 20 + 20 + 9 = 94%</code>
+            </p>
+            <div class="warning-box">
+                <p><strong>Wichtiger SEO-Hinweis:</strong><br>
+                Um 100 % in dieser Kategorie zu erreichen, müsste eine Portfolio-Landingpage künstlich strukturierte Daten für Kochrezepte (<code>Recipe</code>), Blogartikel (<code>Article</code>) oder Produkte (<code>Product</code>) einbinden. Dies gilt bei Google als <strong>strukturiertes Spamming</strong> (irreführende strukturierte Daten) und führt zu einer dauerhaften manuellen Abstrafung im echten Suchmaschinen-Ranking.</p>
+            </div>
+        </section>
+
+        <!-- 4. SYSTEMARCHITEKTUR -->
+        <section class="section-card">
+            <h2>
+                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                Technische Implementierung
+            </h2>
+            <div class="grid-layout">
+                <div>
+                    <h3>1. Backend (Python FastAPI)</h3>
+                    <p>Die Datei <code>main.py</code> stellt eine schnelle REST-API bereit. Sie verwendet <code>BeautifulSoup</code> zum Parsen der Webseiten-DOMs und <code>httpx</code> für asynchrone HTTP-Abrufe.</p>
+                </div>
+                <div>
+                    <h3>2. Analyse-Engine (analyzer.py)</h3>
+                    <p>Enthält die vollständige Bewertungslogik. Bei konfiguriertem Gemini-API-Key wird der Text zusätzlich per LLM auf Stil, Klarheit und Originalität geprüft (sonst greift ein lokales Heuristik-Fallback).</p>
+                </div>
+                <div>
+                    <h3>3. Datenbank (JSON File)</h3>
+                    <p>Analysierte Webseiten-Berichte werden chronologisch geordnet in der Datei <code>reports.json</code> gespeichert und für die Tabellen-Historie bereitgestellt.</p>
+                </div>
+                <div>
+                    <h3>4. Frontend (HTML/CSS/JS)</h3>
+                    <p>Liefert eine moderne Benutzeroberfläche zur Visualisierung von Reports, detaillierten Audit-Kacheln und Empfehlungen für den Benutzer.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Nelke AI Consulting. Alle Rechte vorbehalten. Dokumentation Version 2.0.</p>
+        </div>
+    </footer>
+
+    <!-- Theme Logic -->
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            htmlElement.classList.add('light-mode');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('light-mode')) {
+                htmlElement.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

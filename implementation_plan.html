@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementierungsplan: Berichts-Historie & Vergleichs-Modus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Mode (Default) */
+            --bg-color: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-violet: #8b5cf6;
+            --accent-indigo: #6366f1;
+            --accent-emerald: #10b981;
+            --glow-violet: rgba(139, 92, 246, 0.15);
+            --glow-indigo: rgba(99, 102, 241, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --code-bg: rgba(255, 255, 255, 0.1);
+            --code-text: #a5b4fc;
+            --file-bg: rgba(0, 0, 0, 0.2);
+            --transition-speed: 0.3s;
+        }
+
+        :root.light-mode {
+            /* Light Mode */
+            --bg-color: #f3f4f6;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-violet: #7c3aed;
+            --accent-indigo: #4f46e5;
+            --accent-emerald: #059669;
+            --glow-violet: rgba(124, 58, 237, 0.08);
+            --glow-indigo: rgba(79, 70, 229, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --code-bg: rgba(0, 0, 0, 0.05);
+            --code-text: #4f46e5;
+            --file-bg: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        /* Ambient Glow Backgrounds */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(100px);
+            opacity: 0.6;
+            transition: background var(--transition-speed);
+        }
+
+        body::before {
+            top: -10vw;
+            left: -10vw;
+            background: radial-gradient(circle, var(--glow-violet) 0%, transparent 70%);
+        }
+
+        body::after {
+            bottom: -10vw;
+            right: -10vw;
+            background: radial-gradient(circle, var(--glow-indigo) 0%, transparent 70%);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Theme Switcher Button */
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.2s, border-color 0.2s, background-color var(--transition-speed);
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-violet);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .theme-toggle .sun-icon { display: none; }
+        .theme-toggle .moon-icon { display: block; }
+        .light-mode .theme-toggle .sun-icon { display: block; }
+        .light-mode .theme-toggle .moon-icon { display: none; }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-indigo));
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-indigo) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            transition: background var(--transition-speed);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto;
+            transition: color var(--transition-speed);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transition: transform 0.3s ease, border-color 0.3s ease, background-color var(--transition-speed), border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.25rem;
+            border-left: 4px solid var(--accent-violet);
+            padding-left: 0.75rem;
+            transition: color var(--transition-speed);
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.5rem 0 0.75rem 0;
+            transition: color var(--transition-speed);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            transition: color var(--transition-speed);
+        }
+
+        ul {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            transition: color var(--transition-speed);
+        }
+
+        li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: var(--accent-indigo);
+            font-size: 0.8rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background: rgba(127, 127, 127, 0.03);
+            border: 1px solid rgba(127, 127, 127, 0.05);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .feature-item h4 {
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-item h4::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-emerald);
+        }
+
+        .component-file {
+            background: var(--file-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .component-file-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .component-file code {
+            font-family: monospace;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--card-border);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Farbschema umschalten">
+            <svg class="moon-icon" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg class="sun-icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </button>
+
+        <header>
+            <span class="badge">Erweiterung V2</span>
+            <h1>Berichts-Historie & Vergleichs-Modus</h1>
+            <p class="subtitle">Implementierungsplan für die Speicherung, Historie und den direkten Vergleich von zwei SEO-Audit-Versionen.</p>
+        </header>
+
+        <section class="card">
+            <h2>Zielbeschreibung</h2>
+            <p>Das Tool wird um eine persistente Speicherfunktion auf Basis einer lokalen JSON-Datei erweitert. Benutzer können über eine neue Top-Navigation zwischen der Neueingabe und einer Historienliste aller durchgeführten Audits wechseln. Zudem können Audits für dieselbe Domain beliebig oft wiederholt werden (Re-Audits). Eine **Vergleichsfunktion** ermöglicht es, zwei beliebige Versionen einer Webseite auszuwählen und gegenüberzustellen, um Optimierungsfortschritte (Verbesserungen und Verschlechterungen) direkt zu visualisieren.</p>
+        </section>
+
+        <section class="card">
+            <h2>Systemarchitektur der Erweiterungen</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>Datenbank (reports.json)</h4>
+                    <p>Speichert alle Audit-Reports gruppiert nach Domain und sortiert nach Zeitstempel direkt im Workspace.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Frontend-Navigation</h4>
+                    <p>Zwei Steuerschalter oben ermöglichen das Wechseln zwischen dem Audit-Dashboard und der Historienliste.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Vergleichs-Modus</h4>
+                    <p>Ermöglicht das Auswählen zweier Berichte einer Domain aus dem Verlauf. Stellt Score-Veränderungen (Delta-Werte) und Statusänderungen (behobene/neue Fehler) dar.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Geplante Code-Änderungen</h2>
+            
+            <div class="component-file">
+                <div class="component-file-title"><code>main.py</code> (API-Erweiterung)</div>
+                <ul>
+                    <li>Speicherlogik in <code>POST /api/analyze</code>: Hängt neue Berichte mit Zeitstempel an die Domain in <code>reports.json</code> an.</li>
+                    <li>Neuer Endpunkt <code>GET /api/history</code>: Gibt die Domains, Zeitstempel und Scores zurück.</li>
+                    <li>Neuer Endpunkt <code>GET /api/report</code>: Liefert die vollen Berichtsdetails einer Domain zu einem bestimmten Prüfzeitpunkt.</li>
+                </ul>
+            </div>
+
+            <div class="component-file">
+                <div class="component-file-title"><code>static/index.html</code> (UI-Erweiterung)</div>
+                <ul>
+                    <li><strong>Design-Header:</strong> Navigations-Buttons "Audit starten" und "Bereits durchgeführte Audits".</li>
+                    <li><strong>Historien-Container:</strong> Listenansicht aller Domains. Jede Berichts-Zeile erhält eine Checkbox zum Auswählen für den Vergleich.</li>
+                    <li><strong>Vergleichs-Dashboard:</strong> Ein neuer Ansichtsbereich zur Gegenüberstellung zweier Berichte (Scores nebeneinander mit Delta-Symbolen wie `▲ +15` oder `▼ -5`, Listen für Verbesserungen und Verschlechterungen).</li>
+                </ul>
+            </div>
+
+            <div class="component-file">
+                <div class="component-file-title"><code>static/style.css</code> (Design-Anpassungen)</div>
+                <ul>
+                    <li>Design der Top-Navigation und der Umschaltzustände.</li>
+                    <li>Akkordeon-Tabellendesign für ausgeklappte Verlaufsberichte (mehrere Scans pro Domain).</li>
+                    <li>Side-by-Side-Layout für den Vergleichsmodus mit farbcodierten Delta-Werten.</li>
+                </ul>
+            </div>
+
+            <div class="component-file">
+                <div class="component-file-title"><code>static/app.js</code> (UI-Logik-Erweiterung)</div>
+                <ul>
+                    <li>Umschaltsteuerung der Haupt-Tabs (Audit-Ansicht vs. Historie).</li>
+                    <li>Render-Funktionen für die Historienliste und das Akkordeon der Berichtsversionen.</li>
+                    <li>Checkbox-Auswahl-Limitierung (max. 2) und Triggering des Vergleichsmodus.</li>
+                    <li>Berechnungs- und Renderlogik für Score-Deltas, behobene Fehler und neu entstandene Warnungen.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Verifizierungsplan</h2>
+            <ul>
+                <li><strong>JSON-Speichertest:</strong> Prüfung der Erstellung und Erweiterung von <code>reports.json</code>.</li>
+                <li><strong>Historien-Render-Test:</strong> Prüfung der Tabellenbefüllung und Akkordeon-Funktionalität.</li>
+                <li><strong>Vergleichs-Berechnungstest:</strong> Verifizieren, dass Score-Differenzen mathematisch korrekt berechnet und farblich passend (grün/rot) dargestellt werden.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Erstellt vom Google DeepMind Advanced Agentic Coding Team • Entwickelt von <a href="https://nelke.com" target="_blank" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Nelke AI Consulting</a> • &copy; 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            htmlElement.classList.add('light-mode');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('light-mode')) {
+                htmlElement.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>
