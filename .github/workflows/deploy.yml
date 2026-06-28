@@ -10,22 +10,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Deploy to Server via SSH/rsync
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY || secrets.KEY }}
-        REMOTE_HOST: ${{ secrets.SSH_HOST || secrets.HOST }}
-        REMOTE_USER: ${{ secrets.SSH_USER || secrets.SSH_USERNAME || secrets.USER || secrets.USERNAME }}
-        REMOTE_PORT: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
-        TARGET: "/var/www/seo-optimizer"
-        ARGS: "-rlgoDzvc --delete"
-        SOURCE: "./"
-        EXCLUDE: "/.git/, /.github/, /.venv/, /__pycache__/, /reports.json, /.env, /run.bat, /scratch_search_js.py"
-
-    - name: Run post-deployment commands
+    - name: Run deployment commands via SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST || secrets.HOST }}
@@ -33,14 +18,29 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY || secrets.KEY }}
         port: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
         script: |
+          # Go to the server path
+          mkdir -p /var/www/seo-optimizer
           cd /var/www/seo-optimizer
+          
+          # Initialize or pull the latest code from GitHub
+          if [ ! -d ".git" ]; then
+            echo "Directory is not a git repository. Cloning..."
+            git clone https://github.com/hnelke/seo-optimizer.git .
+          else
+            echo "Git repository found. Pulling latest changes..."
+            git fetch origin main
+            git reset --hard origin/main
+          fi
+          
+          # Setup virtual environment and install dependencies
           if [ ! -d ".venv" ]; then
+            echo "Creating virtual environment..."
             python3 -m venv .venv
           fi
           source .venv/bin/activate
           pip install -r requirements.txt
           
-          # Try to restart the seo-optimizer systemd service if it exists (system-wide or user-wide)
+          # Restart the service if it exists (system-wide or user-level)
           if systemctl is-active --quiet seo-optimizer; then
             sudo systemctl restart seo-optimizer
             echo "seo-optimizer systemd service restarted."
@@ -48,5 +48,5 @@ jobs:
             systemctl --user restart seo-optimizer
             echo "seo-optimizer user-level systemd service restarted."
           else
-            echo "No active systemd service 'seo-optimizer' found. If you use pm2 or another process manager, please configure its restart here."
+            echo "No active systemd service 'seo-optimizer' found. Restart the process manually or configure systemd."
           fi
