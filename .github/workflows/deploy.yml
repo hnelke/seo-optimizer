@@ -10,10 +10,24 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+    - name: Sanitize Hostname
+      id: sanitize
+      run: |
+        # Fetch host secret, fallback options
+        RAW_HOST="${{ secrets.SSH_HOST || secrets.HOST }}"
+        if [ -z "$RAW_HOST" ]; then
+          echo "ERROR: Host secret is empty!"
+          exit 1
+        fi
+        # Remove http://, https://, trailing slashes, paths, and ports
+        CLEAN_HOST=$(echo "$RAW_HOST" | sed -e 's|^https://||' -e 's|^http://||' -e 's|/.*$||' -e 's|:.*$||' -e 's|[[:space:]]||g')
+        echo "Clean Hostname: $CLEAN_HOST"
+        echo "CLEAN_HOST=$CLEAN_HOST" >> $GITHUB_ENV
+
     - name: Run deployment commands via SSH
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SSH_HOST || secrets.HOST }}
+        host: ${{ env.CLEAN_HOST }}
         username: ${{ secrets.SSH_USER || secrets.SSH_USERNAME || secrets.USER || secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY || secrets.KEY }}
         port: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
