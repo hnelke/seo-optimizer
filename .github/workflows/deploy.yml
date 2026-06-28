@@ -15,23 +15,23 @@ jobs:
 
     - name: Deploy to Server via SSH/rsync
       uses: easingthemes/ssh-deploy@main
-      with:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY || secrets.KEY }}
+        REMOTE_HOST: ${{ secrets.SSH_HOST || secrets.HOST }}
+        REMOTE_USER: ${{ secrets.SSH_USER || secrets.SSH_USERNAME || secrets.USER || secrets.USERNAME }}
+        REMOTE_PORT: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
+        TARGET: "/var/www/seo-optimizer"
         ARGS: "-rlgoDzvc --delete"
         SOURCE: "./"
-        REMOTE_HOST: ${{ secrets.SSH_HOST }}
-        REMOTE_USER: ${{ secrets.SSH_USER }}
-        REMOTE_PORT: ${{ secrets.SSH_PORT || '22' }}
-        TARGET: "/var/www/seo-optimizer"
         EXCLUDE: "/.git/, /.github/, /.venv/, /__pycache__/, /reports.json, /.env, /run.bat, /scratch_search_js.py"
 
     - name: Run post-deployment commands
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SSH_PORT || '22' }}
+        host: ${{ secrets.SSH_HOST || secrets.HOST }}
+        username: ${{ secrets.SSH_USER || secrets.SSH_USERNAME || secrets.USER || secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY || secrets.KEY }}
+        port: ${{ secrets.SSH_PORT || secrets.PORT || '22' }}
         script: |
           cd /var/www/seo-optimizer
           if [ ! -d ".venv" ]; then
