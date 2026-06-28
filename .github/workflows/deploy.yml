@@ -41,32 +41,29 @@ jobs:
             git reset --hard origin/main
           fi
           
-          if [ ! -d ".venv" ]; then
-            python3 -m venv .venv
+          # DIAGNOSTICS: check how process 62496 is running (or any process running port 8001)
+          PID=$(pgrep -f "port 8001" | head -n 1)
+          if [ -z "$PID" ]; then
+            PID=$(pgrep -f "main:app.*8001" | head -n 1)
           fi
-          source .venv/bin/activate
-          pip install -r requirements.txt
           
-          # DIAGNOSTICS: Write services and running python processes to static file
-          echo "=== SYSTEMD SERVICES ===" > static/debug_services.txt
-          systemctl list-units --type=service --all | grep -E "seo|optimizer|uwsgi|nginx|uvicorn|fastapi|service" >> static/debug_services.txt || true
-          echo "=== RUNNING PROCESSES ===" >> static/debug_services.txt
-          ps aux | grep -E "python|uvicorn|gunicorn" >> static/debug_services.txt || true
-          
-          # Try to restart the service (check different possible names)
-          if systemctl is-active --quiet seo-optimizer; then
-            sudo systemctl restart seo-optimizer
-            echo "seo-optimizer systemd service restarted." >> static/debug_services.txt
-          elif systemctl is-active --quiet seo; then
-            sudo systemctl restart seo
-            echo "seo systemd service restarted." >> static/debug_services.txt
-          elif systemctl --user is-active --quiet seo-optimizer; then
-            systemctl --user restart seo-optimizer
-            echo "seo-optimizer user-level systemd service restarted." >> static/debug_services.txt
-          elif systemctl --user is-active --quiet seo; then
-            systemctl --user restart seo
-            echo "seo user-level systemd service restarted." >> static/debug_services.txt
+          echo "=== PORT 8001 PROCESS DIAGNOSTICS ===" > static/debug_services.txt
+          if [ -n "$PID" ]; then
+            echo "Found process PID: $PID" >> static/debug_services.txt
+            echo "--- status ---" >> static/debug_services.txt
+            cat /proc/$PID/status | grep -E "PPid|Name" >> static/debug_services.txt || true
+            echo "--- cgroup ---" >> static/debug_services.txt
+            cat /proc/$PID/cgroup >> static/debug_services.txt || true
+            echo "--- command ---" >> static/debug_services.txt
+            cat /proc/$PID/cmdline | tr '\0' ' ' >> static/debug_services.txt || true
+            echo "" >> static/debug_services.txt
           else
-            echo "No active service found. Searching for service files..." >> static/debug_services.txt
-            find /etc/systemd/system/ /lib/systemd/system/ -name "*seo*" >> static/debug_services.txt || true
+            echo "No process found on port 8001" >> static/debug_services.txt
           fi
+          
+          # List all systemd unit files on the system to find the correct service name
+          echo "=== SYSTEMD UNIT FILES ===" >> static/debug_services.txt
+          find /etc/systemd/system/ -name "*.service" >> static/debug_services.txt || true
+          
+          # Try to restart
+          # We will read this log later to see what the cgroup/unit name is!
