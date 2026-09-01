@@ -467,6 +467,49 @@
             </div>
         </div>
 
+        <!-- AUTO DEPLOYMENT SCRIPT -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    3. Automatisches Deployment &amp; Update (deploy.sh)
+                </span>
+                <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Git Pull + Restart</span>
+            </div>
+            <div class="card-subtitle">Zieht die neuesten Änderungen von Git, aktualisiert die Pip-Pakete und startet den Service automatisch neu.</div>
+            <div class="code-container">
+                <pre id="deployCmd">cd /var/www/seo-optimizer && bash deploy.sh</pre>
+                <button class="btn-copy" onclick="copyText('deployCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- SERVICE SETUP SCRIPT -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #a78bfa">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    4. Systemd-Dienst einmalig einrichten (setup_service.sh)
+                </span>
+                <span class="badge" style="background: rgba(167, 139, 250, 0.15); color: #c4b5fd;">Autostart &amp; Service</span>
+            </div>
+            <div class="card-subtitle">Richtet den automatischen Linux-Dienst für SEO-Optimizer ein, damit die App nach Server-Neustarts und im Fehlerfall automatisch läuft.</div>
+            <div class="code-container">
+                <pre id="setupServiceCmd">cd /var/www/seo-optimizer && bash setup_service.sh</pre>
+                <button class="btn-copy" onclick="copyText('setupServiceCmd', this)" title="Kopieren">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
+        </div>
+
         <!-- RESTART OPTION B: MANUAL PROCESS -->
         <div class="card">
             <div class="card-header">
