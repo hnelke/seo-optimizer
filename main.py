@@ -404,10 +404,7 @@ async def api_admin_login(request: AdminLoginRequest):
     expected_user = admin_user.strip().lower()
     input_pass = request.password
     
-    user_ok = (
-        secrets.compare_digest(input_user.encode("utf-8"), expected_user.encode("utf-8"))
-        or input_user == "admin"
-    )
+    user_ok = secrets.compare_digest(input_user.encode("utf-8"), expected_user.encode("utf-8"))
     pass_ok = (
         secrets.compare_digest(input_pass.encode("utf-8"), admin_pass.encode("utf-8"))
         or secrets.compare_digest(input_pass.strip().encode("utf-8"), admin_pass.encode("utf-8"))

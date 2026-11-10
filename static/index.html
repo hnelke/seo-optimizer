@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" href="/static/style.css?v=2.1">
+    <link rel="stylesheet" href="/static/style.css?v=2.2">
 </head>
 <body>
     <div class="glow-bg bg-violet"></div>
@@ -641,8 +641,8 @@
             <p class="admin-login-subtitle">Melde dich an, um die Audit-Historie sowie den Google API-Key &amp; LLM-Modelle zu verwalten.</p>
             <form id="adminLoginForm" class="admin-login-form">
                 <div class="form-control-group" style="text-align: left;">
-                    <label for="adminUsernameInput">Benutzername (E-Mail)</label>
-                    <input type="text" id="adminUsernameInput" value="hnelke@gmail.com" placeholder="hnelke@gmail.com" autocomplete="username" required>
+                    <label for="adminUsernameInput">Benutzername</label>
+                    <input type="text" id="adminUsernameInput" placeholder="Benutzername eingeben" autocomplete="username" required>
                 </div>
                 <div class="form-control-group" style="text-align: left; margin-top: 0.85rem;">
                     <label for="adminPasswordInput">Passwort</label>
@@ -686,7 +686,7 @@
                     </div>
                     <div>
                         <h3 id="adminManageModalTitle" style="margin-bottom: 0.1rem;">Admin-Verwaltung</h3>
-                        <span class="admin-user-pill" id="adminLoggedInUserText">hnelke@gmail.com</span>
+                        <span class="admin-user-pill" id="adminLoggedInUserText">Angemeldet</span>
                     </div>
                 </div>
                 <div class="admin-manage-header-actions">
@@ -892,6 +892,6 @@
     </div>
 
     <!-- JS Logic -->
-    <script src="/static/app.js?v=2.1"></script>
+    <script src="/static/app.js?v=2.2"></script>
 </body>
 </html>
