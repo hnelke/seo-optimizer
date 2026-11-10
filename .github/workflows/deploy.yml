@@ -61,16 +61,24 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
           
-          # Kill running process on port 8001
-          PID=$(lsof -t -i:8001 || fuser -n tcp 8001 2>/dev/null || pgrep -f "port 8001" || true)
-          if [ -n "$PID" ] && [ "$PID" != " " ]; then
-            echo "Killing running process: $PID"
-            kill -9 $PID || true
+          # Restart systemd service if installed, otherwise fallback to nohup
+          if command -v systemctl &> /dev/null && systemctl list-unit-files 2>/dev/null | grep -q "seo-optimizer.service"; then
+            echo "Stopping any stray uvicorn processes on port 8001..."
+            systemctl stop seo-optimizer || true
+            fuser -k 8001/tcp 2>/dev/null || true
             sleep 1
+            echo "Starting systemd service seo-optimizer..."
+            systemctl start seo-optimizer
+            systemctl status seo-optimizer --no-pager
+          else
+            PID=$(lsof -t -i:8001 || fuser -n tcp 8001 2>/dev/null || pgrep -f "port 8001" || true)
+            if [ -n "$PID" ] && [ "$PID" != " " ]; then
+              echo "Killing running process: $PID"
+              kill -9 $PID || true
+              sleep 1
+            fi
+            echo "Starting uvicorn server on port 8001..."
+            nohup venv/bin/uvicorn main:app --host 0.0.0.0 --port 8001 > uvicorn.log 2>&1 &
           fi
-          
-          # Restart uvicorn in the background using nohup
-          echo "Starting uvicorn server on port 8001..."
-          nohup venv/bin/uvicorn main:app --host 0.0.0.0 --port 8001 > uvicorn.log 2>&1 &
           
           echo "Deployment completed successfully."

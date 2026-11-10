@@ -18,13 +18,13 @@ fi
 
 # 3. Python Virtual Environment einrichten
 echo "Richte Python Virtual Environment ein..."
-if [ -d ".venv" ]; then
+if [ -f ".venv/bin/activate" ]; then
     VENV_DIR=".venv"
 else
     VENV_DIR="venv"
 fi
 
-if [ ! -d "$VENV_DIR" ]; then
+if [ ! -f "$VENV_DIR/bin/activate" ]; then
     python3 -m venv "$VENV_DIR"
 fi
 
@@ -37,7 +37,10 @@ pip install -r requirements.txt
 # 4. Prüfen, ob der systemd-Dienst aktiv/installiert ist
 if command -v systemctl &> /dev/null && systemctl list-unit-files 2>/dev/null | grep -q "seo-optimizer.service"; then
     echo "Starte systemd-Dienst 'seo-optimizer' neu..."
-    sudo systemctl restart seo-optimizer
+    sudo systemctl stop seo-optimizer || true
+    sudo fuser -k 8001/tcp 2>/dev/null || true
+    sleep 1
+    sudo systemctl start seo-optimizer
     sleep 2
     sudo systemctl status seo-optimizer --no-pager
 else
