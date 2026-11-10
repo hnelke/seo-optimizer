@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=2.1">
 </head>
 <body>
     <div class="glow-bg bg-violet"></div>
@@ -37,14 +37,6 @@
                     </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <!-- Admin Button -->
-                    <button type="button" class="nav-btn admin-nav-btn" id="adminHeaderBtn" style="display: inline-flex; align-items: center; gap: 0.5rem;" title="Admin-Bereich öffnen">
-                        <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                        <span id="adminHeaderBtnText">Admin</span>
-                        <span class="admin-status-dot" id="adminStatusDot" style="display: none;"></span>
-                    </button>
                     <!-- Glossar Link -->
                     <a href="/glossar" class="nav-btn" id="navGlossaryBtn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
                         <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -632,7 +624,7 @@
 
         <!-- FOOTER -->
         <footer>
-            <p>SEO & KI-Readiness Analyzer • <a href="/glossar" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Glossar der Fachbegriffe</a> • Entwickelt von <a href="https://nelke.com" target="_blank" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Nelke AI Consulting</a> • &copy; 2026</p>
+            <p>SEO &amp; KI-Readiness Analyzer • <a href="/glossar" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Glossar der Fachbegriffe</a> • Entwickelt von <a href="https://nelke.com" target="_blank" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Nelke AI Consulting</a> • &copy; 2026 • <button type="button" class="admin-footer-link" id="adminHeaderBtn" title="Admin-Bereich öffnen"><span id="adminHeaderBtnText">Admin-Login</span><span class="admin-status-dot" id="adminStatusDot" style="display: none;"></span></button></p>
         </footer>
     </div>
 
@@ -900,6 +892,6 @@
     </div>
 
     <!-- JS Logic -->
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=2.1"></script>
 </body>
 </html>

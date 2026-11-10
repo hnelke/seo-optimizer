@@ -2056,13 +2056,29 @@ table.score-table tr:last-child td {
 /* ==========================================
    ADMIN BUTTON, LOGIN MODAL & MANAGEMENT MODAL
    ========================================== */
-.admin-nav-btn {
-    position: relative;
+.admin-footer-link {
+    background: none;
+    border: none;
+    color: var(--accent-indigo);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0;
+    transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-.admin-nav-btn.logged-in {
-    border-color: rgba(16, 185, 129, 0.45);
-    color: var(--text-primary);
+.admin-footer-link:hover {
+    text-decoration: underline;
+    color: var(--accent-violet);
+}
+
+.admin-footer-link.logged-in {
+    color: var(--accent-emerald);
+    font-weight: 600;
 }
 
 .admin-status-dot {

@@ -1589,7 +1589,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (adminLoggedInUserText && username) adminLoggedInUserText.textContent = username;
         } else {
             adminHeaderBtn.classList.remove('logged-in');
-            if (adminHeaderBtnText) adminHeaderBtnText.textContent = 'Admin';
+            if (adminHeaderBtnText) adminHeaderBtnText.textContent = 'Admin-Login';
             if (adminStatusDot) adminStatusDot.style.display = 'none';
         }
     }
