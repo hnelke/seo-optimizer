@@ -37,6 +37,14 @@
                     </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <!-- Admin Button -->
+                    <button type="button" class="nav-btn admin-nav-btn" id="adminHeaderBtn" style="display: inline-flex; align-items: center; gap: 0.5rem;" title="Admin-Bereich öffnen">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span id="adminHeaderBtnText">Admin</span>
+                        <span class="admin-status-dot" id="adminStatusDot" style="display: none;"></span>
+                    </button>
                     <!-- Glossar Link -->
                     <a href="/glossar" class="nav-btn" id="navGlossaryBtn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
                         <svg class="btn-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -107,23 +115,6 @@
                         <span class="loading-spinner-btn" id="btnSpinner"></span>
                     </button>
                 </form>
-
-                <!-- Advanced settings for Gemini Key -->
-                <div class="advanced-settings-wrapper" style="margin-top: 1rem;">
-                    <div class="advanced-toggle" id="advancedToggle" style="display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); user-select: none;">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-icon" style="transition: transform 0.2s;">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                        <span>Erweiterte Einstellungen (Gemini API-Key)</span>
-                    </div>
-                    <div class="advanced-panel" id="advancedPanel" style="display: none; padding-top: 0.75rem;">
-                        <div class="form-control-group">
-                            <label for="geminiApiKeyInput" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.35rem; display: block; font-weight: 500;">Gemini API-Key (Optional, für präzise KI-Textanalyse):</label>
-                            <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." style="width: 100%; padding: 0.6rem 1rem; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-primary); outline: none; transition: border-color 0.2s;">
-                            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; display: block;">Hinweis: Hier können Sie Ihren eigenen Gemini API-Key eingeben, damit die Text-Qualitätsanalyse über die offizielle Gemini-Schnittstelle läuft und ausführlichere Ergebnisse liefert. Ohne Key wird eine einfache, lokale Heuristik-Analyse durchgeführt. Der Key wird lokal in Ihrem Browser (`localStorage`) gespeichert und zur Analyse an die Gemini-Schnittstelle gesendet.</span>
-                        </div>
-                    </div>
-                </div>
                 <div class="error-banner" id="errorBanner" style="display: none;">
                     <span class="error-icon" style="display: inline-flex; align-items: center;">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-rose);">
@@ -643,6 +634,250 @@
         <footer>
             <p>SEO & KI-Readiness Analyzer • <a href="/glossar" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Glossar der Fachbegriffe</a> • Entwickelt von <a href="https://nelke.com" target="_blank" style="color: var(--accent-indigo); text-decoration: none; font-weight: 500;">Nelke AI Consulting</a> • &copy; 2026</p>
         </footer>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" class="admin-modal-overlay" aria-hidden="true">
+        <div class="admin-login-card" role="dialog" aria-modal="true" aria-labelledby="adminLoginModalTitle">
+            <button type="button" class="admin-modal-close-btn" id="adminLoginCloseBtn" aria-label="Schließen">&times;</button>
+            <div class="admin-login-icon">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <h3 id="adminLoginModalTitle">Admin-Login</h3>
+            <p class="admin-login-subtitle">Melde dich an, um die Audit-Historie sowie den Google API-Key &amp; LLM-Modelle zu verwalten.</p>
+            <form id="adminLoginForm" class="admin-login-form">
+                <div class="form-control-group" style="text-align: left;">
+                    <label for="adminUsernameInput">Benutzername (E-Mail)</label>
+                    <input type="email" id="adminUsernameInput" placeholder="hnelke@gmail.com" autocomplete="username" required>
+                </div>
+                <div class="form-control-group" style="text-align: left; margin-top: 0.85rem;">
+                    <label for="adminPasswordInput">Passwort</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="adminPasswordInput" placeholder="Passwort eingeben" autocomplete="current-password" required>
+                        <button type="button" class="pw-toggle-btn" id="toggleAdminPwBtn" aria-label="Passwort anzeigen" title="Passwort anzeigen / verbergen">
+                            <!-- Eye open icon -->
+                            <svg class="eye-open-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <!-- Eye closed icon -->
+                            <svg class="eye-closed-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="error-banner" id="adminLoginError" style="display: none; margin-top: 0.85rem; padding: 0.6rem 0.9rem;">
+                    <span class="error-msg" id="adminLoginErrorMsg">Ungültige Zugangsdaten.</span>
+                </div>
+                <div class="admin-login-actions" style="margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="adminLoginCancelBtn">Abbrechen</button>
+                    <button type="submit" class="btn btn-primary" id="adminLoginSubmitBtn">Anmelden</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN MANAGEMENT MODAL (AUDIT HISTORY & GEMINI LLM SETTINGS) -->
+    <div id="adminManageModal" class="admin-modal-overlay" aria-hidden="true">
+        <div class="admin-manage-card" role="dialog" aria-modal="true" aria-labelledby="adminManageModalTitle">
+            <!-- Modal Header -->
+            <div class="admin-manage-header">
+                <div class="admin-manage-title-group">
+                    <div class="admin-badge-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="adminManageModalTitle" style="margin-bottom: 0.1rem;">Admin-Verwaltung</h3>
+                        <span class="admin-user-pill" id="adminLoggedInUserText">hnelke@gmail.com</span>
+                    </div>
+                </div>
+                <div class="admin-manage-header-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="adminLogoutBtn" title="Als Admin abmelden">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Abmelden</span>
+                    </button>
+                    <button type="button" class="admin-modal-close-btn static-close" id="adminManageCloseBtn" aria-label="Schließen">&times;</button>
+                </div>
+            </div>
+
+            <!-- Modal Tabs -->
+            <div class="admin-modal-tabs">
+                <button type="button" class="admin-tab-btn active" data-admin-tab="adminHistoryTab">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Audit-Historie verwalten</span>
+                </button>
+                <button type="button" class="admin-tab-btn" data-admin-tab="adminAiSettingsTab">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span>Google API-Key &amp; LLM-Modelle</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="admin-manage-body">
+                <!-- TAB 1: AUDIT HISTORY TABLE & DELETE -->
+                <div class="admin-tab-pane active" id="adminHistoryTab">
+                    <!-- Filter Bar -->
+                    <div class="admin-filters-grid">
+                        <div class="filter-group-item">
+                            <label for="adminSearchInput">Suche (Domain / URL)</label>
+                            <input type="text" id="adminSearchInput" placeholder="z. B. nelke.com oder /blog">
+                        </div>
+                        <div class="filter-group-item">
+                            <label for="adminDomainFilter">Domain filtern</label>
+                            <select id="adminDomainFilter">
+                                <option value="all">Alle Domains</option>
+                            </select>
+                        </div>
+                        <div class="filter-group-item">
+                            <label>Score-Filter</label>
+                            <div class="score-inputs">
+                                <select id="adminScoreOp">
+                                    <option value="all">Alle</option>
+                                    <option value="gte">&ge;</option>
+                                    <option value="gt">&gt;</option>
+                                    <option value="lte">&le;</option>
+                                    <option value="lt">&lt;</option>
+                                </select>
+                                <input type="number" id="adminScoreVal" min="0" max="100" placeholder="Score">
+                            </div>
+                        </div>
+                        <div class="filter-group-item">
+                            <label for="adminSortSelect">Sortierung</label>
+                            <select id="adminSortSelect">
+                                <option value="newest" selected>Datum: Neueste zuerst</option>
+                                <option value="oldest">Datum: Älteste zuerst</option>
+                                <option value="score_desc">Score: Absteigend</option>
+                                <option value="score_asc">Score: Aufsteigend</option>
+                                <option value="domain_asc">Domain (A–Z)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Table Actions Bar -->
+                    <div class="admin-table-toolbar">
+                        <div class="admin-table-stats" id="adminTableStatsText">
+                            Lade Analysen...
+                        </div>
+                        <div class="admin-table-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" id="adminResetFiltersBtn" title="Filter zurücksetzen">
+                                Filter zurücksetzen
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="adminDeleteFilteredDomainBtn" style="display: none;">
+                                Komplette Domain löschen
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="adminBulkDeleteBtn" disabled>
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                <span id="adminBulkDeleteBtnText">Ausgewählte löschen (0)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table Container -->
+                    <div class="admin-table-container">
+                        <table class="admin-history-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 42px; text-align: center;">
+                                        <input type="checkbox" id="adminSelectAllCheckbox" class="run-checkbox" title="Alle angezeigten auswählen">
+                                    </th>
+                                    <th>Domain</th>
+                                    <th>Geprüfte URL</th>
+                                    <th>Zeitpunkt</th>
+                                    <th>Score</th>
+                                    <th style="text-align: right;">Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminHistoryTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-history-text">Keine Analysen geladen.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 2: GOOGLE GEMINI API KEY & LLM MODELS -->
+                <div class="admin-tab-pane" id="adminAiSettingsTab">
+                    <div class="admin-settings-section">
+                        <div class="admin-settings-header-row">
+                            <div>
+                                <h4>Google Gemini API &amp; LLM-Modell Konfiguration</h4>
+                                <p style="margin-bottom: 0; font-size: 0.88rem;">Verwalte hier zentral den Google API-Key sowie das verwendete Gemini Sprachmodell für die KI-Textqualitätsanalyse. Änderungen werden direkt in der <code>.env</code> auf dem Server gespeichert.</p>
+                            </div>
+                            <span class="badge" id="adminApiKeyStatusBadge">Prüfe Status...</span>
+                        </div>
+
+                        <form id="adminAiSettingsForm" class="admin-settings-form">
+                            <div class="form-control-group">
+                                <label for="adminGeminiKeyInput">Google Gemini API-Key (<code>GEMINI_API_KEY</code>)</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="adminGeminiKeyInput" placeholder="AIzaSy..." autocomplete="off">
+                                    <button type="button" class="pw-toggle-btn" id="toggleGeminiKeyBtn" aria-label="API-Key anzeigen" title="API-Key anzeigen / verbergen">
+                                        <svg class="eye-open-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                        <svg class="eye-closed-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <span class="field-hint">Ohne hinterlegten API-Key nutzt der Analyzer automatisch die lokale Heuristik als Fallback.</span>
+                            </div>
+
+                            <div class="form-control-group" style="margin-top: 1.25rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
+                                    <label for="adminGeminiModelSelect" style="margin-bottom: 0;">Aktives LLM-Modell (<code>GEMINI_MODEL</code>)</label>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="adminFetchModelsBtn" style="padding: 0.3rem 0.75rem; font-size: 0.78rem;">
+                                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                                        </svg>
+                                        <span>Verfügbare Modelle live von Google API laden</span>
+                                    </button>
+                                </div>
+                                <select id="adminGeminiModelSelect" class="admin-model-select">
+                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Standard – Empfohlen)</option>
+                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning &amp; Analyse)</option>
+                                    <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (Ultra-Schnell)</option>
+                                    <option value="gemini-3-flash-preview">Gemini 3 Flash Preview (Next-Gen Flash)</option>
+                                    <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview (Next-Gen Flaggschiff)</option>
+                                    <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                                </select>
+                                <div class="model-info-box" id="adminModelDescText">
+                                    Optimales Verhältnis aus Geschwindigkeit, Kosten und semantischer Textanalyse.
+                                </div>
+                            </div>
+
+                            <div id="adminSettingsFeedback" class="admin-feedback-banner" style="display: none;"></div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                                <button type="submit" class="btn btn-primary" id="adminSaveSettingsBtn">
+                                    Einstellungen in .env speichern
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- CUSTOM CONFIRMATION MODAL -->

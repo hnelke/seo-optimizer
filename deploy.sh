@@ -11,6 +11,9 @@ git pull origin main
 if [ ! -f .env ] && [ -f .env.example ]; then
     echo "Erstelle .env aus Vorlage .env.example..."
     cp .env.example .env
+elif [ -f .env ]; then
+    grep -q "^ADMIN_USERNAME=" .env || printf "\n# Admin Login Zugangsdaten\nADMIN_USERNAME=hnelke@gmail.com\nADMIN_PASSWORD=\n" >> .env
+    grep -q "^GEMINI_MODEL=" .env || printf "GEMINI_MODEL=gemini-2.5-flash\n" >> .env
 fi
 
 # 3. Python Virtual Environment einrichten

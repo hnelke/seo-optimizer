@@ -571,6 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (banner) {
                     if (textReport.is_ai_analyzed) {
+                        const modelUsed = textReport.ai_model || 'gemini-2.5-flash';
                         banner.style.backgroundColor = 'rgba(99, 102, 241, 0.15)';
                         banner.style.border = '1px solid rgba(99, 102, 241, 0.25)';
                         banner.style.color = '#a5b4fc';
@@ -580,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
                             </svg>
-                            <span>Analysemodus: <strong>KI-basiert (Gemini 2.5 Flash)</strong>. Hochpräzise semantische Textauswertung.</span>
+                            <span>Analysemodus: <strong>KI-basiert (${escapeHtml(modelUsed)})</strong>. Hochpräzise semantische Textauswertung.</span>
                         `;
                     } else {
                         banner.style.backgroundColor = 'rgba(245, 158, 11, 0.15)';
@@ -592,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <line x1="12" y1="8" x2="12" y2="12"></line>
                                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
                             </svg>
-                            <span>Analysemodus: <strong>Lokale Heuristik (Fallback)</strong>. Um die präzisere KI-Auswertung freizuschalten, fügen Sie oben einen Gemini API-Key hinzu.</span>
+                            <span>Analysemodus: <strong>Lokale Heuristik (Fallback)</strong>. Der Google Gemini API-Key &amp; das LLM-Modell können im Admin-Bereich verwaltet werden.</span>
                         `;
                     }
                 }
@@ -864,14 +865,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="domain-meta-side">
                         <span class="badge ${getScoreBadgeClass(lastRun.overall_score)}">Letzter Score: ${lastRun.overall_score}</span>
                         <span style="font-size:0.8rem; color:var(--text-secondary)">${runs.length} Scan(s)</span>
-                        <button class="btn-delete-domain" title="Domain komplett löschen">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                            </svg>
-                        </button>
                         <span class="accordion-arrow">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -902,10 +895,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Add accordion toggle event
-            group.querySelector('.domain-header').addEventListener('click', (e) => {
-                // Prevent toggle if clicking on delete domain button or any child of it
-                if (e.target.closest('.btn-delete-domain')) return;
-                
+            group.querySelector('.domain-header').addEventListener('click', () => {
                 const isOpen = group.classList.contains('open');
                 // Close all others
                 document.querySelectorAll('.history-domain-group').forEach(g => g.classList.remove('open'));
@@ -915,16 +905,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     group.classList.remove('open');
                     openDomain = null;
-                }
-            });
-            
-            // Wire delete domain button
-            const deleteDomBtn = group.querySelector('.btn-delete-domain');
-            deleteDomBtn.addEventListener('click', async (e) => {
-                e.stopPropagation(); // Stop toggle accordion event
-                const message = `Möchtest du die Domain "${dom}" und alle zugehörigen ${runs.length} Scan-Berichte wirklich komplett löschen?`;
-                if (await showCustomConfirm(message, "Domain löschen?")) {
-                    await deleteDomain(dom);
                 }
             });
 
@@ -998,14 +978,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
                             </svg>
                         </button>
-                        <button class="btn btn-delete btn-icon delete-run-btn" title="Löschen">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                            </svg>
-                        </button>
                     </div>
                 `;
                 
@@ -1018,14 +990,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 runRow.querySelector('.reaudit-run-btn').addEventListener('click', () => {
                     switchView('audit');
                     triggerAudit(run.url);
-                });
-                
-                // Wire delete button
-                runRow.querySelector('.delete-run-btn').addEventListener('click', async () => {
-                    const message = `Möchtest du diesen Scan-Bericht vom ${formatDate(run.timestamp)} wirklich löschen?`;
-                    if (await showCustomConfirm(message, "Bericht löschen?")) {
-                        await deleteReport(dom, run.timestamp);
-                    }
                 });
                 
                 // Wire checkbox compare logic
@@ -1128,31 +1092,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getAdminAuthHeaders(extraHeaders = {}) {
+        const token = sessionStorage.getItem('admin_token') || '';
+        return {
+            ...extraHeaders,
+            'Authorization': `Bearer ${token}`
+        };
+    }
+
     async function deleteReport(domain, timestamp) {
         try {
             const response = await fetch(`/api/report?domain=${encodeURIComponent(domain)}&timestamp=${encodeURIComponent(timestamp)}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAdminAuthHeaders()
             });
-            if (!response.ok) throw new Error('Fehler beim Löschen des Berichts.');
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.detail || 'Fehler beim Löschen des Berichts.');
+            }
             
             updateHistoryCount();
-            loadHistory();
+            if (historySection && historySection.style.display !== 'none') {
+                loadHistory();
+            }
+            return true;
         } catch (e) {
             alert(e.message);
+            return false;
         }
     }
 
     async function deleteDomain(domain) {
         try {
             const response = await fetch(`/api/domain?domain=${encodeURIComponent(domain)}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAdminAuthHeaders()
             });
-            if (!response.ok) throw new Error('Fehler beim Löschen der Domain.');
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.detail || 'Fehler beim Löschen der Domain.');
+            }
             
             updateHistoryCount();
-            loadHistory();
+            if (historySection && historySection.style.display !== 'none') {
+                loadHistory();
+            }
+            return true;
         } catch (e) {
             alert(e.message);
+            return false;
         }
     }
 
@@ -1505,6 +1493,695 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelBtn.addEventListener('click', onCancel);
             modal.addEventListener('click', onBackdropClick);
             document.addEventListener('keydown', onKeyDown);
+        });
+    }
+
+    // === ADMIN AUTHENTICATION, HISTORY MODAL & GEMINI SETTINGS ===
+    const adminHeaderBtn = document.getElementById('adminHeaderBtn');
+    const adminHeaderBtnText = document.getElementById('adminHeaderBtnText');
+    const adminStatusDot = document.getElementById('adminStatusDot');
+
+    // Login Modal Elements
+    const adminLoginModal = document.getElementById('adminLoginModal');
+    const adminLoginCloseBtn = document.getElementById('adminLoginCloseBtn');
+    const adminLoginCancelBtn = document.getElementById('adminLoginCancelBtn');
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminUsernameInput = document.getElementById('adminUsernameInput');
+    const adminPasswordInput = document.getElementById('adminPasswordInput');
+    const toggleAdminPwBtn = document.getElementById('toggleAdminPwBtn');
+    const adminLoginError = document.getElementById('adminLoginError');
+    const adminLoginErrorMsg = document.getElementById('adminLoginErrorMsg');
+
+    // Management Modal Elements
+    const adminManageModal = document.getElementById('adminManageModal');
+    const adminManageCloseBtn = document.getElementById('adminManageCloseBtn');
+    const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+    const adminLoggedInUserText = document.getElementById('adminLoggedInUserText');
+    const adminTabBtns = document.querySelectorAll('.admin-tab-btn');
+    const adminTabPanes = document.querySelectorAll('.admin-tab-pane');
+
+    // Admin History Table Elements
+    const adminSearchInput = document.getElementById('adminSearchInput');
+    const adminDomainFilter = document.getElementById('adminDomainFilter');
+    const adminScoreOp = document.getElementById('adminScoreOp');
+    const adminScoreVal = document.getElementById('adminScoreVal');
+    const adminSortSelect = document.getElementById('adminSortSelect');
+    const adminResetFiltersBtn = document.getElementById('adminResetFiltersBtn');
+    const adminTableStatsText = document.getElementById('adminTableStatsText');
+    const adminDeleteFilteredDomainBtn = document.getElementById('adminDeleteFilteredDomainBtn');
+    const adminBulkDeleteBtn = document.getElementById('adminBulkDeleteBtn');
+    const adminBulkDeleteBtnText = document.getElementById('adminBulkDeleteBtnText');
+    const adminSelectAllCheckbox = document.getElementById('adminSelectAllCheckbox');
+    const adminHistoryTableBody = document.getElementById('adminHistoryTableBody');
+
+    // Admin AI Settings Elements
+    const adminAiSettingsForm = document.getElementById('adminAiSettingsForm');
+    const adminGeminiKeyInput = document.getElementById('adminGeminiKeyInput');
+    const toggleGeminiKeyBtn = document.getElementById('toggleGeminiKeyBtn');
+    const adminGeminiModelSelect = document.getElementById('adminGeminiModelSelect');
+    const adminFetchModelsBtn = document.getElementById('adminFetchModelsBtn');
+    const adminModelDescText = document.getElementById('adminModelDescText');
+    const adminApiKeyStatusBadge = document.getElementById('adminApiKeyStatusBadge');
+    const adminSettingsFeedback = document.getElementById('adminSettingsFeedback');
+
+    let isAdminAuthenticated = false;
+    let adminFlatRuns = [];
+    let adminFilteredRuns = [];
+    let adminSelectedKeys = new Set(); // format: `${domain}|||${timestamp}`
+    let adminModelsCatalog = [];
+
+    function setupPasswordToggle(toggleBtn, inputEl) {
+        if (!toggleBtn || !inputEl) return;
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = inputEl.type === 'password';
+            inputEl.type = isPassword ? 'text' : 'password';
+            const openIcon = toggleBtn.querySelector('.eye-open-icon');
+            const closedIcon = toggleBtn.querySelector('.eye-closed-icon');
+            if (openIcon && closedIcon) {
+                openIcon.style.display = isPassword ? 'none' : 'block';
+                closedIcon.style.display = isPassword ? 'block' : 'none';
+            }
+            toggleBtn.setAttribute('aria-label', isPassword ? 'Passwort verbergen' : 'Passwort anzeigen');
+        });
+    }
+
+    setupPasswordToggle(toggleAdminPwBtn, adminPasswordInput);
+    setupPasswordToggle(toggleGeminiKeyBtn, adminGeminiKeyInput);
+
+    function resetPasswordToggleState(toggleBtn, inputEl) {
+        if (!toggleBtn || !inputEl) return;
+        inputEl.type = 'password';
+        const openIcon = toggleBtn.querySelector('.eye-open-icon');
+        const closedIcon = toggleBtn.querySelector('.eye-closed-icon');
+        if (openIcon && closedIcon) {
+            openIcon.style.display = 'block';
+            closedIcon.style.display = 'none';
+        }
+    }
+
+    function updateAdminHeaderUI(authenticated, username = '') {
+        isAdminAuthenticated = authenticated;
+        if (!adminHeaderBtn) return;
+        if (authenticated) {
+            adminHeaderBtn.classList.add('logged-in');
+            if (adminHeaderBtnText) adminHeaderBtnText.textContent = 'Admin-Verwaltung';
+            if (adminStatusDot) adminStatusDot.style.display = 'inline-block';
+            if (adminLoggedInUserText && username) adminLoggedInUserText.textContent = username;
+        } else {
+            adminHeaderBtn.classList.remove('logged-in');
+            if (adminHeaderBtnText) adminHeaderBtnText.textContent = 'Admin';
+            if (adminStatusDot) adminStatusDot.style.display = 'none';
+        }
+    }
+
+    function openModal(modalEl) {
+        if (!modalEl) return;
+        modalEl.style.display = 'flex';
+        modalEl.setAttribute('aria-hidden', 'false');
+        modalEl.offsetHeight;
+        modalEl.classList.add('show');
+    }
+
+    function closeModal(modalEl) {
+        if (!modalEl) return;
+        modalEl.classList.remove('show');
+        modalEl.setAttribute('aria-hidden', 'true');
+        setTimeout(() => {
+            modalEl.style.display = 'none';
+        }, 280);
+    }
+
+    async function checkInitialAdminSession() {
+        const token = sessionStorage.getItem('admin_token');
+        if (!token) {
+            updateAdminHeaderUI(false);
+            return;
+        }
+        try {
+            const resp = await fetch('/api/admin/verify', {
+                headers: getAdminAuthHeaders()
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                updateAdminHeaderUI(true, data.username);
+            } else {
+                sessionStorage.removeItem('admin_token');
+                sessionStorage.removeItem('admin_user');
+                updateAdminHeaderUI(false);
+            }
+        } catch (e) {
+            updateAdminHeaderUI(false);
+        }
+    }
+
+    checkInitialAdminSession();
+
+    if (adminHeaderBtn) {
+        adminHeaderBtn.addEventListener('click', () => {
+            if (isAdminAuthenticated) {
+                openAdminManageModal();
+            } else {
+                if (adminLoginError) adminLoginError.style.display = 'none';
+                if (adminPasswordInput) adminPasswordInput.value = '';
+                resetPasswordToggleState(toggleAdminPwBtn, adminPasswordInput);
+                openModal(adminLoginModal);
+                setTimeout(() => {
+                    if (adminUsernameInput && !adminUsernameInput.value) {
+                        adminUsernameInput.focus();
+                    } else if (adminPasswordInput) {
+                        adminPasswordInput.focus();
+                    }
+                }, 100);
+            }
+        });
+    }
+
+    if (adminLoginCloseBtn) adminLoginCloseBtn.addEventListener('click', () => closeModal(adminLoginModal));
+    if (adminLoginCancelBtn) adminLoginCancelBtn.addEventListener('click', () => closeModal(adminLoginModal));
+    if (adminLoginModal) {
+        adminLoginModal.addEventListener('click', (e) => {
+            if (e.target === adminLoginModal) closeModal(adminLoginModal);
+        });
+    }
+
+    if (adminManageCloseBtn) adminManageCloseBtn.addEventListener('click', () => closeModal(adminManageModal));
+    if (adminManageModal) {
+        adminManageModal.addEventListener('click', (e) => {
+            if (e.target === adminManageModal) closeModal(adminManageModal);
+        });
+    }
+
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (adminLoginError) adminLoginError.style.display = 'none';
+            const username = adminUsernameInput ? adminUsernameInput.value.trim() : '';
+            const password = adminPasswordInput ? adminPasswordInput.value : '';
+
+            try {
+                const resp = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    throw new Error(data.detail || 'Anmeldung fehlgeschlagen.');
+                }
+
+                sessionStorage.setItem('admin_token', data.token);
+                sessionStorage.setItem('admin_user', data.username);
+                updateAdminHeaderUI(true, data.username);
+                if (adminPasswordInput) adminPasswordInput.value = '';
+                resetPasswordToggleState(toggleAdminPwBtn, adminPasswordInput);
+                closeModal(adminLoginModal);
+                openAdminManageModal();
+            } catch (err) {
+                if (adminLoginError && adminLoginErrorMsg) {
+                    adminLoginErrorMsg.textContent = err.message;
+                    adminLoginError.style.display = 'flex';
+                }
+            }
+        });
+    }
+
+    if (adminLogoutBtn) {
+        adminLogoutBtn.addEventListener('click', async () => {
+            try {
+                await fetch('/api/admin/logout', {
+                    method: 'POST',
+                    headers: getAdminAuthHeaders()
+                });
+            } catch (e) {
+                // ignore network error on logout
+            }
+            sessionStorage.removeItem('admin_token');
+            sessionStorage.removeItem('admin_user');
+            updateAdminHeaderUI(false);
+            closeModal(adminManageModal);
+        });
+    }
+
+    // Admin Modal Tabs
+    adminTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-admin-tab');
+            adminTabBtns.forEach(b => b.classList.remove('active'));
+            adminTabPanes.forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            const pane = document.getElementById(targetId);
+            if (pane) pane.classList.add('active');
+        });
+    });
+
+    async function openAdminManageModal() {
+        openModal(adminManageModal);
+        await Promise.all([
+            loadAdminHistoryTable(),
+            loadAdminAiSettings()
+        ]);
+    }
+
+    // --- Admin Audit History Table & Filters ---
+    async function loadAdminHistoryTable() {
+        if (!adminHistoryTableBody) return;
+        adminHistoryTableBody.innerHTML = '<tr><td colspan="6" class="empty-history-text">Lade Audit-Historie...</td></tr>';
+
+        try {
+            const resp = await fetch('/api/history');
+            if (!resp.ok) throw new Error('Fehler beim Abrufen der Audit-Historie.');
+            const data = await resp.json();
+            const domainsObj = data.domains || {};
+
+            adminFlatRuns = [];
+            const domainNames = Object.keys(domainsObj).sort((a, b) => a.localeCompare(b));
+
+            domainNames.forEach(dom => {
+                const runs = domainsObj[dom] || [];
+                runs.forEach(r => {
+                    adminFlatRuns.push({
+                        key: `${dom}|||${r.timestamp}`,
+                        domain: dom,
+                        domainCount: runs.length,
+                        timestamp: r.timestamp,
+                        url: r.url || dom,
+                        overall_score: typeof r.overall_score === 'number' ? r.overall_score : 0,
+                        scores: r.scores || {}
+                    });
+                });
+            });
+
+            // Prune selected keys that no longer exist
+            const existingKeySet = new Set(adminFlatRuns.map(item => item.key));
+            adminSelectedKeys.forEach(k => {
+                if (!existingKeySet.has(k)) adminSelectedKeys.delete(k);
+            });
+
+            // Populate Domain Filter Dropdown
+            if (adminDomainFilter) {
+                const prevVal = adminDomainFilter.value;
+                adminDomainFilter.innerHTML = `<option value="all">Alle Domains (${domainNames.length})</option>`;
+                domainNames.forEach(dom => {
+                    const opt = document.createElement('option');
+                    opt.value = dom;
+                    opt.textContent = `${dom} (${domainsObj[dom].length})`;
+                    adminDomainFilter.appendChild(opt);
+                });
+                if (domainNames.includes(prevVal)) {
+                    adminDomainFilter.value = prevVal;
+                } else {
+                    adminDomainFilter.value = 'all';
+                }
+            }
+
+            filterAndRenderAdminTable();
+        } catch (err) {
+            adminHistoryTableBody.innerHTML = `<tr><td colspan="6" class="empty-history-text" style="color: var(--accent-rose);">${escapeHtml(err.message)}</td></tr>`;
+        }
+    }
+
+    function filterAndRenderAdminTable() {
+        if (!adminHistoryTableBody) return;
+
+        const searchQ = (adminSearchInput ? adminSearchInput.value : '').toLowerCase().trim();
+        const domainSel = adminDomainFilter ? adminDomainFilter.value : 'all';
+        const scoreOp = adminScoreOp ? adminScoreOp.value : 'all';
+        const scoreVal = adminScoreVal ? parseInt(adminScoreVal.value, 10) : NaN;
+        const sortBy = adminSortSelect ? adminSortSelect.value : 'newest';
+
+        // Show/hide "Komplette Domain löschen" button when filtered by a single domain
+        if (adminDeleteFilteredDomainBtn) {
+            if (domainSel !== 'all') {
+                adminDeleteFilteredDomainBtn.style.display = 'inline-flex';
+                adminDeleteFilteredDomainBtn.textContent = `Domain "${domainSel}" komplett löschen`;
+            } else {
+                adminDeleteFilteredDomainBtn.style.display = 'none';
+            }
+        }
+
+        adminFilteredRuns = adminFlatRuns.filter(item => {
+            if (domainSel !== 'all' && item.domain !== domainSel) return false;
+            if (searchQ && !item.domain.toLowerCase().includes(searchQ) && !item.url.toLowerCase().includes(searchQ)) {
+                return false;
+            }
+            if (scoreOp !== 'all' && !isNaN(scoreVal)) {
+                if (scoreOp === 'gte' && !(item.overall_score >= scoreVal)) return false;
+                if (scoreOp === 'gt' && !(item.overall_score > scoreVal)) return false;
+                if (scoreOp === 'lte' && !(item.overall_score <= scoreVal)) return false;
+                if (scoreOp === 'lt' && !(item.overall_score < scoreVal)) return false;
+            }
+            return true;
+        });
+
+        adminFilteredRuns.sort((a, b) => {
+            if (sortBy === 'newest') return new Date(b.timestamp) - new Date(a.timestamp);
+            if (sortBy === 'oldest') return new Date(a.timestamp) - new Date(b.timestamp);
+            if (sortBy === 'score_desc') return b.overall_score - a.overall_score;
+            if (sortBy === 'score_asc') return a.overall_score - b.overall_score;
+            if (sortBy === 'domain_asc') {
+                const cmp = a.domain.localeCompare(b.domain);
+                return cmp !== 0 ? cmp : (new Date(b.timestamp) - new Date(a.timestamp));
+            }
+            return 0;
+        });
+
+        if (adminTableStatsText) {
+            const uniqueDomains = new Set(adminFilteredRuns.map(r => r.domain)).size;
+            adminTableStatsText.textContent = `Zeige ${adminFilteredRuns.length} von ${adminFlatRuns.length} Analysen (${uniqueDomains} Domain${uniqueDomains === 1 ? '' : 's'})`;
+        }
+
+        adminHistoryTableBody.innerHTML = '';
+
+        if (adminFilteredRuns.length === 0) {
+            adminHistoryTableBody.innerHTML = '<tr><td colspan="6" class="empty-history-text">Keine passenden Analysen für diese Filter gefunden.</td></tr>';
+            updateAdminSelectionUI();
+            return;
+        }
+
+        adminFilteredRuns.forEach(item => {
+            const tr = document.createElement('tr');
+            const isChecked = adminSelectedKeys.has(item.key);
+            const s = item.scores || {};
+            const subscoresText = `SEO:${s.seo ?? '-'} | AEO:${s.aeo ?? '-'} | Schema:${s.schema ?? '-'} | EEAT:${s.eeat ?? '-'} | Text:${s.text ?? '-'}`;
+
+            tr.innerHTML = `
+                <td style="text-align: center;">
+                    <input type="checkbox" class="run-checkbox admin-row-checkbox" data-key="${escapeHtml(item.key)}" ${isChecked ? 'checked' : ''}>
+                </td>
+                <td>
+                    <div class="admin-domain-cell">
+                        <span>${escapeHtml(item.domain)}</span>
+                        <span class="qa-tag" title="Anzahl gespeicherter Analysen dieser Domain">${item.domainCount}x</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="admin-url-cell" title="${escapeHtml(item.url)}">${escapeHtml(item.url)}</div>
+                </td>
+                <td style="white-space: nowrap;">${formatDate(item.timestamp)}</td>
+                <td>
+                    <span class="badge ${getScoreBadgeClass(item.overall_score)}">${item.overall_score}</span>
+                    <div class="admin-subscores-mini">${subscoresText}</div>
+                </td>
+                <td style="text-align: right; white-space: nowrap;">
+                    <div class="run-actions">
+                        <button type="button" class="btn btn-secondary btn-icon admin-view-btn" title="Bericht im Dashboard öffnen">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-delete btn-icon admin-del-single-btn" title="Diese Analyse löschen">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-delete btn-icon admin-del-domain-btn" title="Komplette Domain (${escapeHtml(item.domain)}) mit allen ${item.domainCount} Analysen löschen">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                <line x1="9" y1="14" x2="15" y2="14"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            `;
+
+            const rowCb = tr.querySelector('.admin-row-checkbox');
+            rowCb.addEventListener('change', () => {
+                if (rowCb.checked) {
+                    adminSelectedKeys.add(item.key);
+                } else {
+                    adminSelectedKeys.delete(item.key);
+                }
+                updateAdminSelectionUI();
+            });
+
+            tr.querySelector('.admin-view-btn').addEventListener('click', () => {
+                closeModal(adminManageModal);
+                loadFullReport(item.domain, item.timestamp);
+            });
+
+            tr.querySelector('.admin-del-single-btn').addEventListener('click', async () => {
+                const msg = `Möchtest du die Analyse für "${item.domain}" vom ${formatDate(item.timestamp)} unwiderruflich löschen?`;
+                if (await showCustomConfirm(msg, 'Analyse löschen?')) {
+                    const ok = await deleteReport(item.domain, item.timestamp);
+                    if (ok) {
+                        adminSelectedKeys.delete(item.key);
+                        await loadAdminHistoryTable();
+                    }
+                }
+            });
+
+            tr.querySelector('.admin-del-domain-btn').addEventListener('click', async () => {
+                const msg = `Möchtest du die gesamte Domain "${item.domain}" inklusive aller ${item.domainCount} Analysen unwiderruflich löschen?`;
+                if (await showCustomConfirm(msg, 'Komplette Domain löschen?')) {
+                    const ok = await deleteDomain(item.domain);
+                    if (ok) {
+                        await loadAdminHistoryTable();
+                    }
+                }
+            });
+
+            adminHistoryTableBody.appendChild(tr);
+        });
+
+        updateAdminSelectionUI();
+    }
+
+    function updateAdminSelectionUI() {
+        const count = adminSelectedKeys.size;
+        if (adminBulkDeleteBtn) {
+            adminBulkDeleteBtn.disabled = count === 0;
+        }
+        if (adminBulkDeleteBtnText) {
+            adminBulkDeleteBtnText.textContent = `Ausgewählte löschen (${count})`;
+        }
+        if (adminSelectAllCheckbox) {
+            if (adminFilteredRuns.length === 0) {
+                adminSelectAllCheckbox.checked = false;
+                adminSelectAllCheckbox.indeterminate = false;
+            } else {
+                const selectedInFiltered = adminFilteredRuns.filter(r => adminSelectedKeys.has(r.key)).length;
+                adminSelectAllCheckbox.checked = selectedInFiltered === adminFilteredRuns.length;
+                adminSelectAllCheckbox.indeterminate = selectedInFiltered > 0 && selectedInFiltered < adminFilteredRuns.length;
+            }
+        }
+    }
+
+    if (adminSelectAllCheckbox) {
+        adminSelectAllCheckbox.addEventListener('change', () => {
+            if (adminSelectAllCheckbox.checked) {
+                adminFilteredRuns.forEach(r => adminSelectedKeys.add(r.key));
+            } else {
+                adminFilteredRuns.forEach(r => adminSelectedKeys.delete(r.key));
+            }
+            filterAndRenderAdminTable();
+        });
+    }
+
+    if (adminSearchInput) adminSearchInput.addEventListener('input', filterAndRenderAdminTable);
+    if (adminDomainFilter) adminDomainFilter.addEventListener('change', filterAndRenderAdminTable);
+    if (adminScoreOp) adminScoreOp.addEventListener('change', filterAndRenderAdminTable);
+    if (adminScoreVal) adminScoreVal.addEventListener('input', filterAndRenderAdminTable);
+    if (adminSortSelect) adminSortSelect.addEventListener('change', filterAndRenderAdminTable);
+
+    if (adminResetFiltersBtn) {
+        adminResetFiltersBtn.addEventListener('click', () => {
+            if (adminSearchInput) adminSearchInput.value = '';
+            if (adminDomainFilter) adminDomainFilter.value = 'all';
+            if (adminScoreOp) adminScoreOp.value = 'all';
+            if (adminScoreVal) adminScoreVal.value = '';
+            if (adminSortSelect) adminSortSelect.value = 'newest';
+            filterAndRenderAdminTable();
+        });
+    }
+
+    if (adminDeleteFilteredDomainBtn) {
+        adminDeleteFilteredDomainBtn.addEventListener('click', async () => {
+            const dom = adminDomainFilter ? adminDomainFilter.value : 'all';
+            if (!dom || dom === 'all') return;
+            const count = adminFlatRuns.filter(r => r.domain === dom).length;
+            const msg = `Möchtest du die Domain "${dom}" und alle ${count} zugehörigen Analysen wirklich komplett löschen?`;
+            if (await showCustomConfirm(msg, 'Domain komplett löschen?')) {
+                const ok = await deleteDomain(dom);
+                if (ok) {
+                    if (adminDomainFilter) adminDomainFilter.value = 'all';
+                    await loadAdminHistoryTable();
+                }
+            }
+        });
+    }
+
+    if (adminBulkDeleteBtn) {
+        adminBulkDeleteBtn.addEventListener('click', async () => {
+            const count = adminSelectedKeys.size;
+            if (count === 0) return;
+            const msg = `Möchtest du die ${count} ausgewählten Analyse(n) wirklich unwiderruflich löschen?`;
+            if (!(await showCustomConfirm(msg, `${count} Analyse(n) löschen?`))) return;
+
+            const items = Array.from(adminSelectedKeys).map(k => {
+                const [domain, timestamp] = k.split('|||');
+                return { domain, timestamp };
+            });
+
+            try {
+                const resp = await fetch('/api/admin/delete-bulk', {
+                    method: 'POST',
+                    headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ items })
+                });
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) {
+                    throw new Error(data.detail || 'Fehler beim Löschen der ausgewählten Analysen.');
+                }
+                adminSelectedKeys.clear();
+                updateHistoryCount();
+                if (historySection && historySection.style.display !== 'none') {
+                    loadHistory();
+                }
+                await loadAdminHistoryTable();
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    }
+
+    // --- Admin Google Gemini API Key & LLM Models Management ---
+    function renderAdminModelsDropdown(models, selectedModelId) {
+        adminModelsCatalog = models || [];
+        if (!adminGeminiModelSelect) return;
+
+        adminGeminiModelSelect.innerHTML = '';
+        let foundSelected = false;
+
+        adminModelsCatalog.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.id;
+            opt.textContent = m.name || m.id;
+            if (m.id === selectedModelId) {
+                opt.selected = true;
+                foundSelected = true;
+            }
+            adminGeminiModelSelect.appendChild(opt);
+        });
+
+        if (selectedModelId && !foundSelected) {
+            const customOpt = document.createElement('option');
+            customOpt.value = selectedModelId;
+            customOpt.textContent = `${selectedModelId} (Aktuell in .env)`;
+            customOpt.selected = true;
+            adminGeminiModelSelect.prepend(customOpt);
+            adminModelsCatalog.unshift({
+                id: selectedModelId,
+                name: selectedModelId,
+                description: 'Benutzerdefiniertes Gemini-Modell aus der .env Konfiguration.'
+            });
+        }
+
+        updateAdminModelDescription();
+    }
+
+    function updateAdminModelDescription() {
+        if (!adminGeminiModelSelect || !adminModelDescText) return;
+        const currentId = adminGeminiModelSelect.value;
+        const found = adminModelsCatalog.find(m => m.id === currentId);
+        adminModelDescText.textContent = found && found.description
+            ? `Modell-ID: ${currentId} — ${found.description}`
+            : `Aktives Modell: ${currentId}`;
+    }
+
+    if (adminGeminiModelSelect) {
+        adminGeminiModelSelect.addEventListener('change', updateAdminModelDescription);
+    }
+
+    function updateApiKeyBadge(hasKey, modelId) {
+        if (!adminApiKeyStatusBadge) return;
+        if (hasKey) {
+            adminApiKeyStatusBadge.className = 'badge badge-success';
+            adminApiKeyStatusBadge.textContent = `KI Aktiv (${modelId || 'gemini-2.5-flash'})`;
+        } else {
+            adminApiKeyStatusBadge.className = 'badge badge-warning';
+            adminApiKeyStatusBadge.textContent = 'Kein API-Key (Lokale Heuristik)';
+        }
+    }
+
+    function showAdminSettingsFeedback(message, type = 'success') {
+        if (!adminSettingsFeedback) return;
+        adminSettingsFeedback.className = `admin-feedback-banner ${type}`;
+        adminSettingsFeedback.textContent = message;
+        adminSettingsFeedback.style.display = 'block';
+    }
+
+    async function loadAdminAiSettings() {
+        if (adminSettingsFeedback) adminSettingsFeedback.style.display = 'none';
+        resetPasswordToggleState(toggleGeminiKeyBtn, adminGeminiKeyInput);
+        try {
+            const resp = await fetch('/api/admin/settings', {
+                headers: getAdminAuthHeaders()
+            });
+            if (!resp.ok) return;
+            const data = await resp.json();
+            if (adminGeminiKeyInput) {
+                adminGeminiKeyInput.value = data.gemini_api_key || '';
+            }
+            renderAdminModelsDropdown(data.available_models || [], data.gemini_model || 'gemini-2.5-flash');
+            updateApiKeyBadge(data.has_api_key, data.gemini_model);
+        } catch (e) {
+            console.error('Fehler beim Laden der Admin-KI-Einstellungen:', e);
+        }
+    }
+
+    if (adminFetchModelsBtn) {
+        adminFetchModelsBtn.addEventListener('click', async () => {
+            const keyVal = adminGeminiKeyInput ? adminGeminiKeyInput.value.trim() : '';
+            const currentModel = adminGeminiModelSelect ? adminGeminiModelSelect.value : 'gemini-2.5-flash';
+            adminFetchModelsBtn.disabled = true;
+            try {
+                const resp = await fetch('/api/admin/models', {
+                    method: 'POST',
+                    headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ gemini_api_key: keyVal })
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    throw new Error(data.detail || 'Fehler beim Abrufen der Gemini-Modelle.');
+                }
+                renderAdminModelsDropdown(data.models, currentModel);
+                showAdminSettingsFeedback(`${data.count} verfügbare Gemini LLM-Modelle erfolgreich live von der Google API geladen.`, 'success');
+            } catch (err) {
+                showAdminSettingsFeedback(err.message, 'error');
+            } finally {
+                adminFetchModelsBtn.disabled = false;
+            }
+        });
+    }
+
+    if (adminAiSettingsForm) {
+        adminAiSettingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const keyVal = adminGeminiKeyInput ? adminGeminiKeyInput.value.trim() : '';
+            const modelVal = adminGeminiModelSelect ? adminGeminiModelSelect.value : 'gemini-2.5-flash';
+
+            try {
+                const resp = await fetch('/api/admin/settings', {
+                    method: 'PUT',
+                    headers: getAdminAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({
+                        gemini_api_key: keyVal,
+                        gemini_model: modelVal
+                    })
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    throw new Error(data.detail || 'Fehler beim Speichern der Einstellungen.');
+                }
+                updateApiKeyBadge(data.has_api_key, data.gemini_model);
+                showAdminSettingsFeedback(data.message || 'Einstellungen gespeichert.', 'success');
+            } catch (err) {
+                showAdminSettingsFeedback(err.message, 'error');
+            }
         });
     }
 

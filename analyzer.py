@@ -31,12 +31,13 @@ def clean_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 class SEOAnalyzer:
-    def __init__(self, url: str, html_content: str, gemini_api_key: Optional[str] = None):
+    def __init__(self, url: str, html_content: str, gemini_api_key: Optional[str] = None, gemini_model: Optional[str] = None):
         self.url = url
         self.soup = BeautifulSoup(html_content, "html.parser")
         self.parsed_url = urllib.parse.urlparse(url)
         self.base_domain = self.parsed_url.netloc
         self.gemini_api_key = gemini_api_key
+        self.gemini_model = gemini_model
 
     def analyze(self) -> Dict[str, Any]:
         """Runs all audits and returns the full report."""
@@ -731,7 +732,14 @@ class SEOAnalyzer:
             }
             
         # Determine if we use Gemini API or Local Heuristics
-        api_key = self.gemini_api_key or os.environ.get("GEMINI_API_KEY")
+        api_key = (self.gemini_api_key or os.environ.get("GEMINI_API_KEY") or "").strip()
+        if api_key == "your_gemini_api_key_here":
+            api_key = ""
+        model_id = (self.gemini_model or os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+        if model_id.startswith("models/"):
+            model_id = model_id[len("models/"):]
+        if not model_id:
+            model_id = "gemini-2.5-flash"
         
         if api_key:
             try:
@@ -775,7 +783,7 @@ class SEOAnalyzer:
                 )
                 
                 # Make HTTP call to Gemini
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}"
                 payload = {
                     "contents": [{
                         "parts": [{"text": prompt}]
@@ -834,6 +842,7 @@ class SEOAnalyzer:
                         return {
                             "score": total_score,
                             "is_ai_analyzed": True,
+                            "ai_model": model_id,
                             "details": details,
                             "data": {
                                 "word_count": word_count,
@@ -1007,7 +1016,7 @@ class SEOAnalyzer:
             }
         }
 
-async def fetch_and_analyze(url: str, gemini_api_key: Optional[str] = None) -> Dict[str, Any]:
+async def fetch_and_analyze(url: str, gemini_api_key: Optional[str] = None, gemini_model: Optional[str] = None) -> Dict[str, Any]:
     """Helper that fetches a URL and executes the analysis."""
     # Ensure URL has a scheme
     if not url.startswith(("http://", "https://")):
@@ -1045,5 +1054,5 @@ async def fetch_and_analyze(url: str, gemini_api_key: Optional[str] = None) -> D
     html_content = response.text
     
     # Run parser and analyzer
-    analyzer = SEOAnalyzer(url, html_content, gemini_api_key=gemini_api_key)
+    analyzer = SEOAnalyzer(url, html_content, gemini_api_key=gemini_api_key, gemini_model=gemini_model)
     return analyzer.analyze()

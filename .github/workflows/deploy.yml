@@ -45,6 +45,15 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           
+          # Ensure .env exists on server with default structure if not present
+          if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+            echo "Creating .env from .env.example..."
+            cp .env.example .env
+          elif [ -f ".env" ]; then
+            grep -q "^ADMIN_USERNAME=" .env || echo -e "\n# Admin Login Zugangsdaten\nADMIN_USERNAME=hnelke@gmail.com\nADMIN_PASSWORD=" >> .env
+            grep -q "^GEMINI_MODEL=" .env || echo "GEMINI_MODEL=gemini-2.5-flash" >> .env
+          fi
+          
           # Setup python environment using existing 'venv' folder
           if [ ! -d "venv" ]; then
             python3 -m venv venv
